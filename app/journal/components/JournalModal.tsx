@@ -1,25 +1,25 @@
 "use client";
 import { useEffect, useState } from "react";
-import { CloseIcon } from "../components/icons/icons";
-import { AccountTitle, InitialJournalEntry, JournalEntry, TaxCategory, TransactionType } from "../types";
+import { CloseIcon } from "../../components/icons/icons";
+import { AccountTitleLabel, InitialJournalEntry, JournalEntry, TaxCategoryLabel, TransactionTypeLabel } from "../../types";
+import { useJournal } from "@/hooks/useJournal";
 
 type JournalModalProps = {
-    isOpen: boolean;
-    onClose: () => void;
-    entry: JournalEntry | null;
+    entry?: JournalEntry;
 };
 
-const JournalModal = ({ isOpen, onClose, entry }: JournalModalProps) => {
+const JournalModal = ({ entry }: JournalModalProps) => {
+    const { isModalOpen, closeModal } = useJournal();
     // const { addEntry, updateEntry } = useJournal();
     const [formData, setFormData] = useState<InitialJournalEntry>({
-        transactionType: TransactionType.EXPENSE,
+        transactionType: "EXPENSE",
         occurrenceDate: new Date().toISOString().split('T')[0],
-        debitAccount: AccountTitle.SUPPLIES,
+        debitAccount: "COMMUNICATION",
         debitAmount: 0,
-        debitTax: TaxCategory.TAXABLE_10,
-        creditAccount: AccountTitle.CASH,
+        debitTax: "TAXABLE_10",
+        creditAccount: "BANK_ACCOUNT",
         creditAmount: 0,
-        creditTax: TaxCategory.TAXABLE_10,
+        creditTax: "TAXABLE_10",
         client: '',
         paymentDate: new Date().toISOString().split('T')[0],
         paymentAccount: '',
@@ -48,15 +48,15 @@ const JournalModal = ({ isOpen, onClose, entry }: JournalModalProps) => {
         setFormData(newFormData);
     };
 
-    if (!isOpen) return null;
+    if (!isModalOpen) return null;
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-            <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+            <div className="absolute inset-0 bg-black/50" onClick={closeModal} />
             <div className="relative z-10 w-full max-w-2xl rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800">
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-xl font-semibold text-gray-800 dark:text-white">{entry ? '仕訳を編集' : '仕訳を登録'}</h3>
-                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                    <button onClick={closeModal} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
                         <CloseIcon className="w-6 h-6" />
                     </button>
                 </div>
@@ -67,7 +67,7 @@ const JournalModal = ({ isOpen, onClose, entry }: JournalModalProps) => {
                             <div>
                                 <label htmlFor="transactionType" className="block text-sm font-medium text-gray-700 dark:text-gray-300">収支区分</label>
                                 <select id="transactionType" name="transactionType" value={formData.transactionType} onChange={handleChange} className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                                    {Object.values(TransactionType).map(t => <option key={t} value={t}>{t}</option>)}
+                                    {Object.values(TransactionTypeLabel).map(t => <option key={t} value={t}>{t}</option>)}
                                 </select>
                             </div>
                             <div>
@@ -83,7 +83,7 @@ const JournalModal = ({ isOpen, onClose, entry }: JournalModalProps) => {
                                 <div>
                                     <label htmlFor="debitAccount" className="block text-sm font-medium text-gray-700 dark:text-gray-300">勘定科目</label>
                                     <select id="debitAccount" name="debitAccount" value={formData.debitAccount} onChange={handleChange} className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                                        {Object.values(AccountTitle).map(t => <option key={t} value={t}>{t}</option>)}
+                                        {Object.values(AccountTitleLabel).map(t => <option key={t} value={t}>{t}</option>)}
                                     </select>
                                 </div>
                                 <div>
@@ -93,7 +93,7 @@ const JournalModal = ({ isOpen, onClose, entry }: JournalModalProps) => {
                                 <div>
                                     <label htmlFor="debitTax" className="block text-sm font-medium text-gray-700 dark:text-gray-300">税区分</label>
                                     <select id="debitTax" name="debitTax" value={formData.debitTax} onChange={handleChange} className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                                        {Object.values(TaxCategory).map(t => <option key={t} value={t}>{t}</option>)}
+                                        {Object.values(TaxCategoryLabel).map(t => <option key={t} value={t}>{t}</option>)}
                                     </select>
                                 </div>
                             </div>
@@ -106,7 +106,7 @@ const JournalModal = ({ isOpen, onClose, entry }: JournalModalProps) => {
                                 <div>
                                     <label htmlFor="creditAccount" className="block text-sm font-medium text-gray-700 dark:text-gray-300">勘定科目</label>
                                     <select id="creditAccount" name="creditAccount" value={formData.creditAccount} onChange={handleChange} className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                                        {Object.values(AccountTitle).map(t => <option key={t} value={t}>{t}</option>)}
+                                        {Object.values(AccountTitleLabel).map(t => <option key={t} value={t}>{t}</option>)}
                                     </select>
                                 </div>
                                 <div>
@@ -116,7 +116,7 @@ const JournalModal = ({ isOpen, onClose, entry }: JournalModalProps) => {
                                 <div>
                                     <label htmlFor="creditTax" className="block text-sm font-medium text-gray-700 dark:text-gray-300">税区分</label>
                                     <select id="creditTax" name="creditTax" value={formData.creditTax} onChange={handleChange} className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                                        {Object.values(TaxCategory).map(t => <option key={t} value={t}>{t}</option>)}
+                                        {Object.values(TaxCategoryLabel).map(t => <option key={t} value={t}>{t}</option>)}
                                     </select>
                                 </div>
                             </div>
@@ -144,7 +144,7 @@ const JournalModal = ({ isOpen, onClose, entry }: JournalModalProps) => {
                     </div>
                     {/* Button */}
                     <div className="flex items-center justify-end p-4 border-t dark:border-gray-700">
-                        <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500 mr-2">キャンセル</button>
+                        <button type="button" onClick={closeModal} className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500 mr-2">キャンセル</button>
                         <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">保存</button>
                     </div>
                 </form>
