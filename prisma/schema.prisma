@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+enum TransactionType {
+    INCOME
+    EXPENSE
+}
+
+enum AccountTitle {
+    SALES
+    COMMUNICATION
+    SUPPLIES
+    RENT
+    UTILITIES
+    ADVERTISING
+    CASH
+    BANK_ACCOUNT
+    ACCOUNTS_RECEIVABLE
+}
+
+enum TaxCategory {
+    TAXABLE_10
+    TAXABLE_8
+    NON_TAXABLE
+    TAX_EXEMPT
+}
+
+model JournalEntry {
+    id              String          @id @default(cuid())
+    transactionType TransactionType
+    occurrenceDate  String
+    debitAccount    AccountTitle
+    debitAmount     Int
+    debitTax        TaxCategory
+    creditAccount   AccountTitle
+    creditAmount    Int
+    creditTax       TaxCategory
+    client          String
+    paymentDate     String
+    paymentAccount  String
+    notes           String?
+    createdAt       DateTime        @default(now())
+    updatedAt       DateTime        @updatedAt
+
+    @@map("journal_entries")
+}
