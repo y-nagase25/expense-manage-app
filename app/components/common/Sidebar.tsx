@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import React from 'react';
-import { BookIcon, LedgerIcon } from './icons/icons';
+import { BookIcon, LedgerIcon } from '../icons/icons';
 import { usePathname } from 'next/navigation';
 
 const Sidebar: React.FC = () => {
