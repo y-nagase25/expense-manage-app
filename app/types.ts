@@ -17,8 +17,11 @@ export const AccountTitleLabel: Record<AccountTitle, string> = {
     UTILITIES: '水道光熱費',
     ADVERTISING: '広告宣伝費',
     CASH: '現金',
-    BANK_ACCOUNT: '普通預金',
+    BANK_DEPOSIT: '普通預金',
     ACCOUNTS_RECEIVABLE: '売掛金',
+    CREDIT_CARD: 'クレジットカード',
+    OWNERS_DEBID: '事業主借',
+    OWNERS_CREDIT: '事業主貸',
 };
 
 export const TaxCategoryLabel: Record<TaxCategory, string> = {
@@ -30,7 +33,6 @@ export const TaxCategoryLabel: Record<TaxCategory, string> = {
 
 // Optional helpers for select options, etc.
 export const TransactionTypeOptions = Object.values(TransactionType) as TransactionType[];
-export const AccountTitleOptions = Object.values(AccountTitle) as AccountTitle[];
 export const TaxCategoryOptions = Object.values(TaxCategory) as TaxCategory[];
 
 // Domain types reusing Prisma enums

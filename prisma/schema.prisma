@@ -23,8 +23,11 @@ enum AccountTitle {
     UTILITIES
     ADVERTISING
     CASH
-    BANK_ACCOUNT
+    BANK_DEPOSIT
     ACCOUNTS_RECEIVABLE
+    CREDIT_CARD
+    OWNERS_DEBID
+    OWNERS_CREDIT
 }
 
 enum TaxCategory {
