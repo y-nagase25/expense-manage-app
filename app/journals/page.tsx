@@ -4,6 +4,7 @@ import RegisterButton from "./components/ResiterButton";
 import JournalModal from "./components/JournalModal";
 import { AccountTitleLabel, TransactionTypeLabel } from "../types";
 import Tag from "../components/common/Tag";
+import ActionIcons from "./components/ActionIcons";
 
 const JournalPage = async () => {
     const entries = await getJournalEntries();
@@ -29,6 +30,7 @@ const JournalPage = async () => {
                                 {/* <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">貸方勘定科目</th> */}
                                 {/* <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">貸方金額</th> */}
                                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">取引先</th>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">備考</th>
                                 <th scope="col" className="relative px-6 py-3">
                                     <span className="sr-only">Actions</span>
                                 </th>
@@ -48,14 +50,10 @@ const JournalPage = async () => {
                                     {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{AccountTitleLabel[entry.creditAccount]}</td> */}
                                     {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 text-right">{entry.creditAmount.toLocaleString()}</td> */}
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 max-w-xs truncate">{entry.client}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 max-w-xs truncate">{entry.notes}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <div className="flex items-center justify-end space-x-4">
-                                            {/* <button onClick={() => handleOpenModal(entry)} className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-200">
-                                                <EditIcon className="w-5 h-5" />
-                                            </button> */}
-                                            {/* <button onClick={() => handleDelete(entry.id)} className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-200">
-                                                <TrashIcon className="w-5 h-5" />
-                                            </button> */}
+                                            <ActionIcons entry={entry} />
                                         </div>
                                     </td>
                                 </tr>

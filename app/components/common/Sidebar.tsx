@@ -25,8 +25,8 @@ const Sidebar: React.FC = () => {
             </div>
             <nav className="flex-1 px-2 py-4 space-y-2">
                 <Link
-                    href="/journal"
-                    className={`${commonLinkClasses} ${isActive("/journal") ? activeLinkClasses : inactiveLinkClasses}`}
+                    href="/journals"
+                    className={`${commonLinkClasses} ${isActive("/journals") ? activeLinkClasses : inactiveLinkClasses}`}
                 >
                     <BookIcon className="w-5 h-5" />
                     <span className="mx-4 font-medium">仕訳帳</span>
