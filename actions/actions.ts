@@ -5,7 +5,9 @@ import { AccountTitle, Prisma, TaxCategory, TransactionType } from "@prisma/clie
 import { revalidatePath } from "next/cache";
 
 export async function getJournalEntries() {
-    return await prisma.journalEntry.findMany();
+    return await prisma.journalEntry.findMany({
+        orderBy: { occurrenceDate: 'desc' }
+    });
 }
 
 export async function createJournalEntries(formData: FormData) {
@@ -33,7 +35,24 @@ export async function createJournalEntries(formData: FormData) {
         }
         console.error(error);
     }
-    revalidatePath("/journal");
+    revalidatePath("/journals");
+}
+
+export async function deleteJournalEntry(id: string) {
+    try {
+        await prisma.journalEntry.delete({
+            where: { id },
+        });
+    } catch (error: unknown) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
+            // Record to delete not found
+            console.warn(`journalEntry not found for id: ${id}`);
+        } else {
+            console.error(error);
+            throw error;
+        }
+    }
+    revalidatePath("/journals");
 }
 
 const getNum = (formData: FormData, k: string) => {
