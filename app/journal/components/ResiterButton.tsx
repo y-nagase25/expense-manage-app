@@ -7,7 +7,7 @@ const RegisterButton = () => {
     const { openModal } = useJournal();
     return (
         <Button color="success" onClick={openModal}>
-            Resister
+            登録
         </Button>
     );
 };

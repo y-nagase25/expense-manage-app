@@ -1,10 +1,8 @@
-type ButtonProps = {
-    children?: React.ReactNode;
-    onClick?: () => void;
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
     color?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning';
 }
 
-const Button = ({ children, onClick, color = 'primary', ...props }: ButtonProps) => {
+const Button = ({ children, color = 'primary', className, ...props }: ButtonProps) => {
     const getColorClasses = (color: string) => {
         switch (color) {
             case 'primary':
@@ -24,10 +22,9 @@ const Button = ({ children, onClick, color = 'primary', ...props }: ButtonProps)
 
     return (
         <button
-            onClick={onClick}
             className={`
                 flex items-center px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-opacity-50 transition
-                ${getColorClasses(color)}
+                ${getColorClasses(color)} ${className ?? ''}
             `}
             {...props}
         >

@@ -12,10 +12,16 @@ const Sidebar: React.FC = () => {
     const pathname = usePathname();
     const isActive = (path: string) => pathname === path;
 
+
     return (
         <div className="flex flex-col w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-center h-16 border-b border-gray-200 dark:border-gray-700">
-                <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">FinDash</span>
+                <Link
+                    href="/"
+                    className="text-2xl font-bold text-indigo-600 dark:text-indigo-400"
+                >
+                    FinDash
+                </Link>
             </div>
             <nav className="flex-1 px-2 py-4 space-y-2">
                 <Link

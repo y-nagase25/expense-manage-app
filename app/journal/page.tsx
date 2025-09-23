@@ -1,8 +1,9 @@
 import { JournalProvider } from "@/hooks/useJournal";
 import { getJournalEntries } from "@/actions/actions";
-import Counter from "./components/Counter";
 import RegisterButton from "./components/ResiterButton";
 import JournalModal from "./components/JournalModal";
+import { AccountTitleLabel, TransactionTypeLabel } from "../types";
+import Tag from "../components/common/Tag";
 
 const JournalPage = async () => {
     const entries = await getJournalEntries();
@@ -11,7 +12,6 @@ const JournalPage = async () => {
         <JournalProvider>
             <div className="container mx-auto">
                 <div className="mb-6">
-                    <Counter />
                 </div>
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-2xl font-bold text-gray-800 dark:text-white">仕訳帳</h1>
@@ -22,11 +22,12 @@ const JournalPage = async () => {
                     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                         <thead className="bg-gray-50 dark:bg-gray-700">
                             <tr>
+                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">収支</th>
                                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">発生日</th>
                                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">借方勘定科目</th>
                                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">借方金額</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">貸方勘定科目</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">貸方金額</th>
+                                {/* <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">貸方勘定科目</th> */}
+                                {/* <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">貸方金額</th> */}
                                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">取引先</th>
                                 <th scope="col" className="relative px-6 py-3">
                                     <span className="sr-only">Actions</span>
@@ -36,11 +37,16 @@ const JournalPage = async () => {
                         <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                             {entries.map((entry) => (
                                 <tr key={entry.id}>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                                        <Tag color={entry.transactionType == 'INCOME' ? 'success' : 'danger'}>
+                                            {TransactionTypeLabel[entry.transactionType]}
+                                        </Tag>
+                                    </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{entry.occurrenceDate}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{entry.debitAccount}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{AccountTitleLabel[entry.debitAccount]}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 text-right">{entry.debitAmount.toLocaleString()}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{entry.creditAccount}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 text-right">{entry.creditAmount.toLocaleString()}</td>
+                                    {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{AccountTitleLabel[entry.creditAccount]}</td> */}
+                                    {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 text-right">{entry.creditAmount.toLocaleString()}</td> */}
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 max-w-xs truncate">{entry.client}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <div className="flex items-center justify-end space-x-4">
