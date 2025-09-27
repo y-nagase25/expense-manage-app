@@ -1,5 +1,6 @@
 "use server"
 
+import { ServerActionResponse } from "@/app/types";
 import { prisma } from "@/lib/db"
 import { AccountTitle, Prisma, TaxCategory, TransactionType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
@@ -10,7 +11,44 @@ export async function getJournalEntries() {
     });
 }
 
-export async function createJournalEntries(formData: FormData) {
+export async function getJournalEntry(id: string) {
+    return await prisma.journalEntry.findUnique({
+        where: { id },
+    });
+}
+
+export async function updateJournalEntry(formData: FormData) {
+    const id = formData.get("id") as string;
+    if (!id) throw new Error("Missing journalEntry id");
+
+    try {
+        await prisma.journalEntry.update({
+            where: { id },
+            data: {
+                occurrenceDate: formData.get("occurrenceDate") as string,
+                debitAccount: formData.get("debitAccount") as AccountTitle,
+                debitAmount: getNum(formData, "debitAmount") as number,
+                debitTax: formData.get("debitTax") as TaxCategory,
+                creditAccount: formData.get("creditAccount") as AccountTitle,
+                creditAmount: getNum(formData, "creditAmount") as number,
+                creditTax: formData.get("creditTax") as TaxCategory,
+                client: formData.get("client") as string,
+                paymentDate: formData.get("paymentDate") as string,
+                paymentAccount: formData.get("paymentAccount") as string,
+                notes: formData.get("notes") as string,
+            }
+        });
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+    revalidatePath(`/journals/${id}`);
+    revalidatePath("/journals");
+}
+
+export async function createJournalEntry(prevState: ServerActionResponse, formData: FormData): Promise<ServerActionResponse> {
+    console.log(formData);
+
     try {
         await prisma.journalEntry.create({
             data: {
@@ -30,12 +68,15 @@ export async function createJournalEntries(formData: FormData) {
         })
 
     } catch (error: unknown) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
-            // "Unique constraint failed on the {constraint}"
+        if (error instanceof Error) {
+            console.error(error);
+            return { success: false, message: 'エラーが発生しました' };
+            if (error instanceof Prisma.PrismaClientKnownRequestError) { }
         }
-        console.error(error);
     }
     revalidatePath("/journals");
+
+    return { success: true, message: '仕訳の登録が完了しました' };
 }
 
 export async function deleteJournalEntry(id: string) {
