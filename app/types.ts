@@ -1,4 +1,4 @@
-import { TransactionType, AccountTitle, TaxCategory } from '@prisma/client';
+import { TransactionType, AccountTitle, TaxCategory, JournalEntry } from '@prisma/client';
 
 // Re-export so the rest of the app can import from your local module if preferred.
 // export type { TransactionType, AccountTitle, TaxCategory };
@@ -36,20 +36,36 @@ export const TransactionTypeOptions = Object.values(TransactionType) as Transact
 export const TaxCategoryOptions = Object.values(TaxCategory) as TaxCategory[];
 
 // Domain types reusing Prisma enums
-export type JournalEntry = {
-    id: string;
-    transactionType: TransactionType;
-    occurrenceDate: string;
-    debitAccount: AccountTitle;
-    debitAmount: number;
-    debitTax: TaxCategory;
-    creditAccount: AccountTitle;
-    creditAmount: number;
-    creditTax: TaxCategory;
-    client: string;
-    paymentDate: string;
-    paymentAccount: string;
-    notes?: string;
-};
+// export type JournalEntry = {
+//     id: string;
+//     transactionType: TransactionType;
+//     occurrenceDate: string;
+//     debitAccount: AccountTitle;
+//     debitAmount: number;
+//     debitTax: TaxCategory;
+//     creditAccount: AccountTitle;
+//     creditAmount: number;
+//     creditTax: TaxCategory;
+//     client: string;
+//     paymentDate: string;
+//     paymentAccount: string;
+//     notes?: string;
+// };
 
-export type InitialJournalEntry = Omit<JournalEntry, 'id'>;
+export type InitialJournalEntry = Omit<JournalEntry, 'id' | 'createdAt' | 'updatedAt'>;
+
+export type AccountType = 'DEBIT' | 'CREDIT';
+
+export type FormType = 'text' | 'date';
+
+export type FieldProps = {
+    children: React.ReactNode;
+    label: string;
+    className?: string;
+}
+
+export type ServerActionResponse = {
+    success: boolean;
+    message: string;
+}
+

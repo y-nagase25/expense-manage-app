@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteJournalEntry } from "@/actions/actions";
+import { deleteJournalEntry } from "@/lib/actions";
 import { EditIcon, TrashIcon } from "@/app/components/icons/icons";
 import { JournalEntry } from "@prisma/client";
 import Link from "next/link";
@@ -10,7 +10,7 @@ const ActionIcons = ({ entry }: { entry: JournalEntry }) => {
     return (
         <>
             <Link
-                href={`/journals`}
+                href={`/journals/${entry.id}`}
                 className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-200"
             >
                 <EditIcon className="w-5 h-5" />

@@ -1,10 +1,10 @@
 import { JournalProvider } from "@/hooks/useJournal";
-import { getJournalEntries } from "@/actions/actions";
+import { getJournalEntries } from "@/lib/actions";
 import RegisterButton from "./components/ResiterButton";
 import JournalModal from "./components/JournalModal";
-import { AccountTitleLabel, TransactionTypeLabel } from "../types";
-import Tag from "../components/common/Tag";
+import { AccountTitleLabel } from "../types";
 import ActionIcons from "./components/ActionIcons";
+import TransactionTypeTag from "./components/TransactionTypeTag";
 
 const JournalPage = async () => {
     const entries = await getJournalEntries();
@@ -39,11 +39,7 @@ const JournalPage = async () => {
                         <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                             {entries.map((entry) => (
                                 <tr key={entry.id}>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                                        <Tag color={entry.transactionType == 'INCOME' ? 'success' : 'danger'}>
-                                            {TransactionTypeLabel[entry.transactionType]}
-                                        </Tag>
-                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100"><TransactionTypeTag entry={entry} /></td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{entry.occurrenceDate}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{AccountTitleLabel[entry.debitAccount]}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 text-right">{entry.debitAmount.toLocaleString()}</td>
