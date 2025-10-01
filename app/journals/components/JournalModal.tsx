@@ -1,35 +1,65 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { CloseIcon } from "../../components/icons/icons";
-import { AccountTitleLabel, ServerActionResponse, TaxCategoryLabel, TransactionTypeLabel } from "../../types";
+import { AccountTitleLabel, FormResponse, TaxCategoryLabel, TransactionTypeLabel } from "../../types";
 import { useJournal } from "@/hooks/useJournal";
 import Button from "@/app/components/common/Button";
 import { createJournalEntry } from "@/lib/actions";
 import { Field, SplitField } from "@/app/components/form/Field";
+import { useToast } from "@/hooks/useToast";
+import { AccountTitle, TaxCategory, TransactionType } from "@prisma/client";
 
 const JournalModal = () => {
     const { isModalOpen, closeModal, formData, setFormData } = useJournal();
+    const { showToast } = useToast();
 
-    const initialState: ServerActionResponse = {
+    const initialState: FormResponse = {
         success: false,
         message: '',
+        field: undefined,
     };
+    // manage form state with a server action
     const [state, formAction] = useActionState(createJournalEntry, initialState);
+
+    // useEffect to show a toast when the form state changes after submission
+    useEffect(() => {
+        if (state.field) errFieldUpdate(state.field);
+
+        if (state.message) {
+            if (state.success) {
+                showToast('success', '処理成功', state.message);
+            } else {
+                showToast('error', 'エラー', state.message);
+            }
+        }
+    }, [state, showToast]);
+
+    const errFieldUpdate = (errField: FormData) => {
+        setFormData({
+            transactionType: errField.get('transactionType') as TransactionType || formData.transactionType,
+            occurrenceDate: errField.get('occurrenceDate') as string || formData.occurrenceDate,
+            debitAccount: errField.get('debitAccount') as AccountTitle || formData.debitAccount,
+            debitAmount: Number(errField.get('debitAmount')) || formData.debitAmount,
+            debitTax: errField.get('debitTax') as TaxCategory || formData.debitTax,
+            creditAccount: errField.get('creditAccount') as AccountTitle || formData.creditAccount,
+            client: errField.get('client') as string || formData.client,
+            paymentDate: errField.get('paymentDate') as string || formData.paymentDate,
+            paymentAccount: errField.get('paymentAccount') as string || formData.paymentAccount,
+            notes: errField.get('notes') as string || formData.notes,
+        });
+    }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         let newFormData = { ...formData, [name]: value };
-        console.log(newFormData);
 
-        if (name === 'debitAmount') {
-            newFormData.creditAmount = Number(value);
-        } else if (name === 'creditAmount') {
+        if (name === 'creditAmount') {
             newFormData.debitAmount = Number(value);
         }
-
         setFormData(newFormData);
     };
+
 
     if (!isModalOpen) return null;
 
@@ -44,7 +74,6 @@ const JournalModal = () => {
                     </button>
                 </div>
                 <form action={formAction}>
-                    {state.message ?? <code>{state.message}</code>}
                     <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                         <Field label="収支区分">
                             <select
@@ -148,7 +177,7 @@ const JournalModal = () => {
                                 id="notes"
                                 name="notes"
                                 rows={3}
-                                value={formData.notes}
+                                value={formData.notes ?? ''}
                                 onChange={handleChange}
                                 className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                             >

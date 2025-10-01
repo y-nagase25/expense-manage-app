@@ -1,9 +1,10 @@
 "use server"
 
-import { ServerActionResponse } from "@/app/types";
+import { FormResponse } from "@/app/types";
 import { prisma } from "@/lib/db"
 import { AccountTitle, Prisma, TaxCategory, TransactionType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function getJournalEntries() {
     return await prisma.journalEntry.findMany({
@@ -30,8 +31,6 @@ export async function updateJournalEntry(formData: FormData) {
                 debitAmount: getNum(formData, "debitAmount") as number,
                 debitTax: formData.get("debitTax") as TaxCategory,
                 creditAccount: formData.get("creditAccount") as AccountTitle,
-                creditAmount: getNum(formData, "creditAmount") as number,
-                creditTax: formData.get("creditTax") as TaxCategory,
                 client: formData.get("client") as string,
                 paymentDate: formData.get("paymentDate") as string,
                 paymentAccount: formData.get("paymentAccount") as string,
@@ -40,15 +39,14 @@ export async function updateJournalEntry(formData: FormData) {
         });
     } catch (error) {
         console.error(error);
-        throw error;
+        redirect(`/journals/${id}?updated=0`);
     }
     revalidatePath(`/journals/${id}`);
     revalidatePath("/journals");
+    redirect(`/journals/${id}?updated=1`);
 }
 
-export async function createJournalEntry(prevState: ServerActionResponse, formData: FormData): Promise<ServerActionResponse> {
-    console.log(formData);
-
+export async function createJournalEntry(prevState: FormResponse, formData: FormData): Promise<FormResponse> {
     try {
         await prisma.journalEntry.create({
             data: {
@@ -58,8 +56,6 @@ export async function createJournalEntry(prevState: ServerActionResponse, formDa
                 debitAmount: getNum(formData, "debitAmount") as number,
                 debitTax: formData.get("debitTax") as TaxCategory,
                 creditAccount: formData.get("creditAccount") as AccountTitle,
-                creditAmount: getNum(formData, "creditAmount") as number,
-                creditTax: formData.get("creditTax") as TaxCategory,
                 client: formData.get("client") as string,
                 paymentDate: formData.get("paymentDate") as string,
                 paymentAccount: formData.get("paymentAccount") as string,
@@ -70,7 +66,11 @@ export async function createJournalEntry(prevState: ServerActionResponse, formDa
     } catch (error: unknown) {
         if (error instanceof Error) {
             console.error(error);
-            return { success: false, message: 'エラーが発生しました' };
+            return {
+                success: false,
+                message: 'エラーが発生しました',
+                field: formData
+            };
             if (error instanceof Prisma.PrismaClientKnownRequestError) { }
         }
     }
