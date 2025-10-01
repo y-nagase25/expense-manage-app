@@ -7,6 +7,8 @@ import { JournalEntry } from "@prisma/client";
 import Button from "@/app/components/common/Button";
 import { Field, SplitField } from "@/app/components/form/Field";
 import { InputSelect, InputText } from "@/app/components/form/Input";
+import { formatCurrency, formatToJST } from "@/lib/format";
+import ClientToastOnUpdated from "@/app/journals/components/ClientToastOnUpdated";
 
 type PageProps = {
     params: { id: string }
@@ -23,7 +25,9 @@ export default async function JournalDetailPage({ params }: PageProps) {
                 <span className="mr-2">＜</span>戻る
             </Link>
             <h1 className="text-2xl font-semibold mb-6">仕訳詳細</h1>
+            <div className="text-sm text-gray-500 my-2 text-right">最終更新：{formatToJST(entry.updatedAt, false)}</div>
 
+            <ClientToastOnUpdated />
             <form action={updateJournalEntry}>
                 <input type="hidden" name="id" value={entry.id} />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -117,14 +121,8 @@ function taxCategoryClassify(entry: JournalEntry, accoutType: AccountType): stri
     }
     if (accoutType === 'CREDIT') {
         // 売上高
-        if (entry.creditAccount === 'SALES') return TaxCategoryLabel[entry.creditTax];
+        if (entry.creditAccount === 'SALES') return TaxCategoryLabel[entry.debitTax];
     }
 
     return '対象外';
 }
-
-function formatCurrency(n: number) {
-    return new Intl.NumberFormat("ja-JP", { style: "currency", currency: "JPY" }).format(n);
-}
-
-
