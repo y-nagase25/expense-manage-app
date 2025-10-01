@@ -16,6 +16,8 @@ export const AccountTitleLabel: Record<AccountTitle, string> = {
     RENT: '地代家賃',
     UTILITIES: '水道光熱費',
     ADVERTISING: '広告宣伝費',
+    TRANSPORTION: '旅費交通費',
+    DATING: '交際費',
     CASH: '現金',
     BANK_DEPOSIT: '普通預金',
     ACCOUNTS_RECEIVABLE: '売掛金',
@@ -35,23 +37,6 @@ export const TaxCategoryLabel: Record<TaxCategory, string> = {
 export const TransactionTypeOptions = Object.values(TransactionType) as TransactionType[];
 export const TaxCategoryOptions = Object.values(TaxCategory) as TaxCategory[];
 
-// Domain types reusing Prisma enums
-// export type JournalEntry = {
-//     id: string;
-//     transactionType: TransactionType;
-//     occurrenceDate: string;
-//     debitAccount: AccountTitle;
-//     debitAmount: number;
-//     debitTax: TaxCategory;
-//     creditAccount: AccountTitle;
-//     creditAmount: number;
-//     creditTax: TaxCategory;
-//     client: string;
-//     paymentDate: string;
-//     paymentAccount: string;
-//     notes?: string;
-// };
-
 export type InitialJournalEntry = Omit<JournalEntry, 'id' | 'createdAt' | 'updatedAt'>;
 
 export type AccountType = 'DEBIT' | 'CREDIT';
@@ -64,8 +49,11 @@ export type FieldProps = {
     className?: string;
 }
 
-export type ServerActionResponse = {
+export type BaseResponse = {
     success: boolean;
     message: string;
+}
+export type FormResponse = BaseResponse & {
+    field?: FormData;
 }
 

@@ -22,6 +22,8 @@ enum AccountTitle {
     RENT
     UTILITIES
     ADVERTISING
+    TRANSPORTION
+    DATING
     CASH
     BANK_DEPOSIT
     ACCOUNTS_RECEIVABLE
@@ -45,8 +47,6 @@ model JournalEntry {
     debitAmount     Int
     debitTax        TaxCategory
     creditAccount   AccountTitle
-    creditAmount    Int
-    creditTax       TaxCategory
     client          String
     paymentDate     String
     paymentAccount  String
