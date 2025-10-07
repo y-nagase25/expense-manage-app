@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useCallback, useEffect } from "react";
 import { X } from 'lucide-react';
 import { AccountTitleLabel, FormResponse, TaxCategoryLabel, TransactionTypeLabel } from "@/lib/types";
 import { useJournal } from "@/hooks/useJournal";
@@ -22,9 +22,24 @@ const JournalModal = () => {
     // manage form state with a server action
     const [state, formAction] = useActionState(createJournalEntry, initialState);
 
+    const preserveFormData = useCallback((errField: FormData) => {
+        setFormData(prevFormData => ({
+            transactionType: errField.get('transactionType') as TransactionType || prevFormData.transactionType,
+            occurrenceDate: errField.get('occurrenceDate') as string || prevFormData.occurrenceDate,
+            debitAccount: errField.get('debitAccount') as AccountTitle || prevFormData.debitAccount,
+            debitAmount: Number(errField.get('debitAmount')) || prevFormData.debitAmount,
+            debitTax: errField.get('debitTax') as TaxCategory || prevFormData.debitTax,
+            creditAccount: errField.get('creditAccount') as AccountTitle || prevFormData.creditAccount,
+            client: errField.get('client') as string || prevFormData.client,
+            paymentDate: errField.get('paymentDate') as string || prevFormData.paymentDate,
+            paymentAccount: errField.get('paymentAccount') as string || prevFormData.paymentAccount,
+            notes: errField.get('notes') as string || prevFormData.notes,
+        }));
+    }, [setFormData]);
+
     // useEffect to show a toast when the form state changes after submission
     useEffect(() => {
-        if (state.field) errFieldUpdate(state.field);
+        if (state.field) preserveFormData(state.field);
 
         if (state.message) {
             if (state.success) {
@@ -33,30 +48,11 @@ const JournalModal = () => {
                 showToast('error', 'エラー', state.message);
             }
         }
-    }, [state, showToast]);
-
-    const errFieldUpdate = (errField: FormData) => {
-        setFormData({
-            transactionType: errField.get('transactionType') as TransactionType || formData.transactionType,
-            occurrenceDate: errField.get('occurrenceDate') as string || formData.occurrenceDate,
-            debitAccount: errField.get('debitAccount') as AccountTitle || formData.debitAccount,
-            debitAmount: Number(errField.get('debitAmount')) || formData.debitAmount,
-            debitTax: errField.get('debitTax') as TaxCategory || formData.debitTax,
-            creditAccount: errField.get('creditAccount') as AccountTitle || formData.creditAccount,
-            client: errField.get('client') as string || formData.client,
-            paymentDate: errField.get('paymentDate') as string || formData.paymentDate,
-            paymentAccount: errField.get('paymentAccount') as string || formData.paymentAccount,
-            notes: errField.get('notes') as string || formData.notes,
-        });
-    }
+    }, [state, showToast, preserveFormData]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        let newFormData = { ...formData, [name]: value };
-
-        if (name === 'creditAmount') {
-            newFormData.debitAmount = Number(value);
-        }
+        const newFormData = { ...formData, [name]: value };
         setFormData(newFormData);
     };
 

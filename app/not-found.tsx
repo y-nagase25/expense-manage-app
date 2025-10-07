@@ -8,7 +8,7 @@ const NotFoundPage = () => {
                 <h2>404 | Not Found</h2>
                 <p>Could not find requested resource...</p>
                 <Button asChild variant="link">
-                    <a href="/">Return Home</a>
+                    <Link href="/">Return Home</Link>
                 </Button>
             </div>
         </div>

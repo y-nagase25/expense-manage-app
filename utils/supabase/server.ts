@@ -14,7 +14,7 @@ export async function createServerSupabase() {
                 },
                 setAll(cookiesToSet) {
                     try {
-                        cookiesToSet.forEach(({ name, value, options }) =>
+                        cookiesToSet.forEach(({ name, value }) =>
                             cookieStore.set(name, value)
                         );
                     } catch (e) {

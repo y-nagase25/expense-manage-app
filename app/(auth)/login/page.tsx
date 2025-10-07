@@ -14,39 +14,18 @@ import {
 import { createBrowserSupabase } from "@/utils/supabase/client";
 import { useToast } from "@/hooks/useToast";
 import { User } from "lucide-react";
-import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, Suspense } from "react";
+import { LoginErrorHandler } from "./components/LoginErrorHandler";
 
 const links = [
     { label: '利用規約', url: '/term' },
     { label: 'プライバシーポリシー', url: '/privacy' },
 ]
 
-const ERROR_MESSAGES: Record<string, string> = {
-    'server_error': 'サーバーエラーが発生しました',
-    'unexpected_failure': 'データベースエラーが発生しました。Supabaseの設定を確認してください。',
-    'exchange_failed': '認証トークンの交換に失敗しました',
-    'missing_code': '認証パラメータが不足しています',
-    'unexpected_error': '予期しないエラーが発生しました',
-};
-
 const LoginPage = () => {
     const supabase = createBrowserSupabase();
     const { showToast } = useToast();
     const [isLoading, setIsLoading] = useState(false);
-    const searchParams = useSearchParams();
-
-    useEffect(() => {
-        const error = searchParams.get('error');
-        const errorDescription = searchParams.get('error_description');
-        const errorCode = searchParams.get('error_code');
-
-        if (error) {
-            const message = ERROR_MESSAGES[error] || ERROR_MESSAGES[errorCode || ''] || 'ログインに失敗しました';
-            const description = errorDescription || '';
-            showToast('error', message, description);
-        }
-    }, [searchParams, showToast]);
 
     async function signInWithGoogle() {
         try {
@@ -74,6 +53,9 @@ const LoginPage = () => {
 
     return (
         <Card>
+            <Suspense fallback={null}>
+                <LoginErrorHandler showToast={showToast} />
+            </Suspense>
             <CardHeader>
                 <CardTitle>{process.env.NEXT_PUBLIC_APP_NAME ?? 'App Name'}</CardTitle>
                 {/* TODO:App Logo */}
@@ -83,7 +65,6 @@ const LoginPage = () => {
                 <CardDescription>
                     はじめての方も登録済みの方もこちらからログインできます。
                 </CardDescription>
-
             </CardContent>
             <CardFooter className="flex-col gap-2">
                 <Button variant="outline" className="w-full" onClick={signInWithGoogle} disabled={isLoading}>

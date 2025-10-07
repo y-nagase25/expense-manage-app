@@ -8,7 +8,6 @@ type JournalContextType = {
   closeModal: () => void;
   formData: InitialJournalEntry;
   setFormData: React.Dispatch<React.SetStateAction<InitialJournalEntry>>;
-  loading: boolean;
 }
 
 // Context Object
@@ -17,7 +16,6 @@ const JournalContext = createContext<JournalContextType | null>(null);
 // Provider Component
 export const JournalProvider = ({ children }: { children: React.ReactNode }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState<InitialJournalEntry>({
     transactionType: "EXPENSE",
     occurrenceDate: new Date().toISOString().split('T')[0],
@@ -25,8 +23,6 @@ export const JournalProvider = ({ children }: { children: React.ReactNode }) => 
     debitAmount: 0,
     debitTax: "TAXABLE_10",
     creditAccount: "BANK_DEPOSIT",
-    // creditAmount: 0,
-    // creditTax: "TAXABLE_10",
     client: '',
     paymentDate: new Date().toISOString().split('T')[0],
     paymentAccount: '',
@@ -37,7 +33,7 @@ export const JournalProvider = ({ children }: { children: React.ReactNode }) => 
   const closeModal = () => setIsModalOpen(false);
 
   return (
-    <JournalContext.Provider value={{ isModalOpen, openModal, closeModal, formData, setFormData, loading }}>
+    <JournalContext.Provider value={{ isModalOpen, openModal, closeModal, formData, setFormData }}>
       {children}
     </JournalContext.Provider>
   )

@@ -10,11 +10,7 @@ import { InputSelect, InputText } from "@/app/components/form/Input";
 import { formatCurrency, formatToJST } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 
-type PageProps = {
-    params: { id: string }
-};
-
-export default async function JournalDetailPage({ params }: PageProps) {
+export default async function JournalDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     const entry = await getJournalEntry(id);
     if (!entry) return notFound();
