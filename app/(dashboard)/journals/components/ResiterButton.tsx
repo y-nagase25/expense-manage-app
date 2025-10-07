@@ -1,12 +1,11 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { useJournal } from "@/hooks/useJournal";
-import Button from "../../components/common/Button";
-
 
 const RegisterButton = () => {
     const { openModal } = useJournal();
     return (
-        <Button color="success" onClick={openModal}>
+        <Button onClick={openModal}>
             登録
         </Button>
     );

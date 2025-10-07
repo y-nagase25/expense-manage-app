@@ -1,5 +1,5 @@
 "use client";
-import { InitialJournalEntry } from "@/app/types";
+import { InitialJournalEntry } from "@/lib/types";
 import { createContext, useState, useContext } from "react";
 
 type JournalContextType = {

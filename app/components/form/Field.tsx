@@ -1,4 +1,4 @@
-import { FieldProps } from "@/app/types";
+import { FieldProps } from "@/lib/types";
 
 export const Field = ({ children, label, className }: FieldProps) => {
     return (

@@ -1,14 +1,14 @@
 "use client";
 
 import { useActionState, useEffect } from "react";
-import { CloseIcon } from "../../components/icons/icons";
-import { AccountTitleLabel, FormResponse, TaxCategoryLabel, TransactionTypeLabel } from "../../types";
+import { X } from 'lucide-react';
+import { AccountTitleLabel, FormResponse, TaxCategoryLabel, TransactionTypeLabel } from "@/lib/types";
 import { useJournal } from "@/hooks/useJournal";
-import Button from "@/app/components/common/Button";
 import { createJournalEntry } from "@/lib/actions";
 import { Field, SplitField } from "@/app/components/form/Field";
 import { useToast } from "@/hooks/useToast";
 import { AccountTitle, TaxCategory, TransactionType } from "@prisma/client";
+import { Button } from "@/components/ui/button";
 
 const JournalModal = () => {
     const { isModalOpen, closeModal, formData, setFormData } = useJournal();
@@ -70,7 +70,7 @@ const JournalModal = () => {
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-xl font-semibold text-gray-800 dark:text-white">仕訳を登録</h3>
                     <button onClick={closeModal} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
-                        <CloseIcon className="w-6 h-6" />
+                        <X className="w-6 h-6" />
                     </button>
                 </div>
                 <form action={formAction}>
@@ -185,8 +185,8 @@ const JournalModal = () => {
                         </Field>
                     </div>
                     <div className="flex items-center justify-end p-4 dark:border-gray-700">
-                        <Button color="secondary" onClick={closeModal}>キャンセル</Button>
-                        <Button color="success" type="submit" className="ml-4">登録</Button>
+                        <Button variant="outline" onClick={closeModal}>キャンセル</Button>
+                        <Button type="submit" className="ml-4">登録</Button>
                     </div>
                 </form>
             </div>

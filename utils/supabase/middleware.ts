@@ -6,7 +6,6 @@ export async function updateSession(request: NextRequest) {
         request,
     });
 
-    // The cookie is named sb-<project_ref>-auth-token by default.
     const supabase = createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
@@ -42,10 +41,6 @@ export async function updateSession(request: NextRequest) {
         data: { user },
         error,
     } = await supabase.auth.getUser();
-    // const { data } = await supabase.auth.getClaims();
-    console.log('user: ', user);
-    console.log('error: ', error);
-
 
     if (
         !user &&
@@ -71,8 +66,6 @@ export async function updateSession(request: NextRequest) {
     //    return myNewResponse
     // If this is not done, you may be causing the browser and server to go out
     // of sync and terminate the user's session prematurely!
-    console.log('middleware: ', request.cookies.getAll());
-    console.log('middleware: ', supabaseResponse.cookies.getAll());
 
     return supabaseResponse;
 }

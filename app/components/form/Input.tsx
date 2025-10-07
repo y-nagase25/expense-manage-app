@@ -1,4 +1,4 @@
-import { FormType } from "@/app/types";
+import { FormType } from "@/lib/types";
 
 type InputTextProps = {
     type?: FormType;

@@ -1,7 +1,7 @@
 "use client";
 
 import { deleteJournalEntry } from "@/lib/actions";
-import { EditIcon, TrashIcon } from "@/app/components/icons/icons";
+import { EditIcon, TrashIcon } from 'lucide-react';
 import { JournalEntry } from "@prisma/client";
 import Link from "next/link";
 import { startTransition } from "react";

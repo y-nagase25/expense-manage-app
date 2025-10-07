@@ -2,7 +2,7 @@ import { JournalProvider } from "@/hooks/useJournal";
 import { getJournalEntries } from "@/lib/actions";
 import RegisterButton from "./components/ResiterButton";
 import JournalModal from "./components/JournalModal";
-import { AccountTitleLabel } from "../types";
+import { AccountTitleLabel } from "@/lib/types";
 import ActionIcons from "./components/ActionIcons";
 import TransactionTypeTag from "./components/TransactionTypeTag";
 

@@ -1,6 +1,6 @@
 "use server"
 
-import { FormResponse } from "@/app/types";
+import { FormResponse } from "@/lib/types";
 import { prisma } from "@/lib/db"
 import { AccountTitle, Prisma, TaxCategory, TransactionType } from "@prisma/client";
 import { revalidatePath } from "next/cache";

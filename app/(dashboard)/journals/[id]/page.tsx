@@ -1,14 +1,14 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getJournalEntry, updateJournalEntry } from "@/lib/actions";
-import { AccountTitleLabel, AccountType, TaxCategoryLabel } from "@/app/types";
+import { AccountTitleLabel, AccountType, TaxCategoryLabel } from "@/lib/types";
 import TransactionTypeTag from "../components/TransactionTypeTag";
+import ClientToastOnUpdated from "../components/ClientToastOnUpdated";
 import { JournalEntry } from "@prisma/client";
-import Button from "@/app/components/common/Button";
 import { Field, SplitField } from "@/app/components/form/Field";
 import { InputSelect, InputText } from "@/app/components/form/Input";
 import { formatCurrency, formatToJST } from "@/lib/format";
-import ClientToastOnUpdated from "@/app/journals/components/ClientToastOnUpdated";
+import { Button } from "@/components/ui/button";
 
 type PageProps = {
     params: { id: string }

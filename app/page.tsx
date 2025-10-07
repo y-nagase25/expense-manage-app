@@ -1,12 +1,12 @@
 "use client";
 
-import Button from "./components/common/Button";
 import { useToast } from "@/hooks/useToast";
-import { BaseResponse } from "./types";
+import { BaseResponse } from "@/lib/types";
 import { useActionState, useEffect } from "react";
 import { createJournalEntry } from "@/lib/actions";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   const { showToast } = useToast();
@@ -19,7 +19,6 @@ export default function Home() {
   const [state, formAction] = useActionState(createJournalEntry, initialState);
   // useEffect to show a toast when the form state changes after submission
   useEffect(() => {
-    console.log(state);
     if (state.message) {
       if (state.success) {
         showToast('success', '処理成功', state.message);
@@ -37,9 +36,14 @@ export default function Home() {
       <Link href="/login" className="text-blue-500">Login</Link>
 
       <h2 className="mt-8">Client Component</h2>
-      <Button color="secondary" onClick={() => showToast("info", "新しいバージョンが利用可能です。", "ページをリロードしてください。")}>
-        INFO
+      <Button onClick={() => showToast("info", "新しいバージョンが利用可能です。", "ページをリロードしてください。")}>
+        Default
       </Button>
+      <Button variant="destructive">Destructive</Button>
+      <Button variant="ghost">Ghost</Button>
+      <Button variant="link">Link</Button>
+      <Button variant="outline">Outline</Button>
+      <Button variant="secondary">Secondary</Button>
 
       <h2 className="mt-8">Server Action Integration</h2>
       <form action={formAction}>

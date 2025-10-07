@@ -28,7 +28,6 @@ const LoginPage = () => {
                 redirectTo: 'http://localhost:3000/auth/callback',
             }
         });
-        if (error) console.error(error);
     }
 
     return (
