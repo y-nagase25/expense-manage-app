@@ -6,6 +6,29 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 An expense management application built with Next.js 15 that uses Supabase for authentication and Prisma with PostgreSQL for data management. The app provides journal entry management for tracking income and expenses with double-entry bookkeeping.
 
+## Design Work Rules
+
+If you are requested to perform design work, please create a file according to the following rules:
+- File name: `YYYYMMDD_{work_content}.md`
+- Save location: `docs/`
+- Format: Markdown
+Example: `docs/20251001_user_authentication_system_design.md`
+
+## Next.js Application Implementation Rules
+- Except for screens that require dynamic updates (e.g., chat), data retrieval should be performed from server components whenever possible.
+- Avoid using "use client" unless client-side operation is essential (state management, browser API usage, heavy UI libraries, etc.).
+- When retrieving data from server components, separate server processes into loaders and other packages to separate responsibilities.
+- Use import "server-only" for processes expected to run server-side to prevent accidental references from the client.
+- Server actions ("use server" operations) should be used only for operations with side effects, such as data updates and file uploads. Revalidate actions such as revalidatePath and revalidateTag should also be performed as a single set.
+- Client-side data retrieval is an exception, and is permitted only for real-time communication, high-frequency polling, search based on user actions, and offline optimization (e.g., React Query).
+
+## GitHub Operation Rules
+
+- When a user asks you to submit a PR, create a feature branch for your current work, commit it, and then submit the PR.
+- Pushing directly to develop or main is prohibited.
+- Diffs, including Prisma migrations, can break the environment during automatic deployment, so please ask the user for permission before proceeding.
+- After making logic changes, run `npm run lint` in the project root before pushing.
+
 ## Common Commands
 
 ### Development
@@ -108,7 +131,5 @@ Required in `.env`:
 
 ## Notes
 
-- The app uses Turbopack for faster builds/dev (Next.js 15 feature)
-- Middleware session handling is currently bypassed (`NextResponse.next()`)
 - Database uses Supabase's connection pooler with Prisma
 - Form submissions use progressive enhancement (Server Actions + useFormState pattern)
