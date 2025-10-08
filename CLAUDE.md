@@ -64,27 +64,54 @@ pnpm db:seed      # Run database seed script
 
 ```
 app/
-  (auth)/              # Route group for authentication pages (login, etc.)
-  journals/            # Journal entry CRUD pages
-    [id]/             # Dynamic route for individual journal entries
-    components/       # Journal-specific components (JournalModal, ActionIcons, etc.)
-  components/         # Shared components (Header, Sidebar, Button, Input, etc.)
-  types.ts            # Type definitions and label mappings for Prisma enums
+  (auth)/                    # Route group for authentication pages
+    auth/callback/           # OAuth callback handler route
+    login/                   # Login page with Google OAuth
+      components/            # Login-specific components (LoginErrorHandler)
+    layout.tsx              # Auth layout wrapper
+  (dashboard)/               # Route group for authenticated pages
+    journals/                # Journal entry CRUD pages
+      [id]/                  # Dynamic route for individual journal entries
+      components/            # Journal-specific components (JournalModal, ActionIcons, etc.)
+    profile/                 # User profile page
+    layout.tsx              # Dashboard layout with Sidebar
+  components/                # Shared app components
+    form/                    # Form components (Field, Input)
+  layout.tsx                # Root layout with ToastProvider
+  page.tsx                  # Home page
+  types.ts                  # Type definitions and label mappings for Prisma enums
+
+components/                 # Global shared components (outside app directory)
+  icons/                    # Icon components (GoogleIcon, etc.)
+  ui/                       # shadcn/ui components (Button, Card, etc.)
+  AppLayout.tsx             # Main app layout wrapper
+  Header.tsx                # Global header component
+  Sidebar.tsx               # Navigation sidebar
+  Footer.tsx                # Global footer component
 
 lib/
-  actions.ts          # Server Actions for journal CRUD operations
-  db.ts               # Prisma client singleton
-  format.ts           # Formatting utilities
+  actions.ts                # Server Actions for journal CRUD operations
+  db.ts                     # Prisma client singleton
+  format.ts                 # Formatting utilities
+  types.ts                  # Shared type definitions
+  utils.ts                  # General utility functions
 
 utils/
-  supabase/           # Supabase client utilities (client.ts, server.ts, middleware.ts)
+  supabase/                 # Supabase client utilities
+    client.ts               # Browser client
+    server.ts               # Server client
+    middleware.ts           # Session update middleware
 
 hooks/
-  useJournal.tsx      # Context provider for journal modal state
-  useToast.tsx        # Toast notification hook
+  useJournal.tsx            # Context provider for journal modal state
+  useToast.tsx              # Toast notification hook with ToastProvider
 
 prisma/
-  schema.prisma       # Database schema with JournalEntry model and enums
+  schema.prisma             # Database schema with JournalEntry model and enums
+  migrations/               # Database migration files
+  seed.ts                   # Database seed script
+
+docs/                       # Design and documentation files (YYYYMMDD_*.md)
 ```
 
 ### Data Model
