@@ -1,10 +1,3 @@
-import { JournalProvider } from "@/hooks/useJournal";
-import { getJournalEntries } from "@/lib/actions";
-import RegisterButton from "./components/ResiterButton";
-import JournalModal from "./components/JournalModal";
-import { AccountTitleLabel } from "@/lib/types";
-import ActionIcons from "./components/ActionIcons";
-import TransactionTypeTag from "./components/TransactionTypeTag";
 import {
     Table,
     TableBody,
@@ -12,7 +5,14 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
+import { JournalProvider } from '@/hooks/useJournal';
+import { getJournalEntries } from '@/lib/actions';
+import { AccountTitleLabel } from '@/lib/types';
+import ActionIcons from './components/ActionIcons';
+import JournalModal from './components/JournalModal';
+import RegisterButton from './components/ResiterButton';
+import TransactionTypeTag from './components/TransactionTypeTag';
 
 const JournalPage = async () => {
     const entries = await getJournalEntries();
@@ -44,7 +44,10 @@ const JournalPage = async () => {
                             <TableBody>
                                 {entries.length === 0 ? (
                                     <TableRow>
-                                        <TableCell colSpan={7} className="text-center text-muted-foreground">
+                                        <TableCell
+                                            colSpan={7}
+                                            className="text-center text-muted-foreground"
+                                        >
                                             データがありません
                                         </TableCell>
                                     </TableRow>

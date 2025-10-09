@@ -146,7 +146,8 @@ const variants = cva(
 - When a user asks you to submit a PR, create a feature branch for your current work, commit it, and then submit the PR.
 - Pushing directly to develop or main is prohibited.
 - Diffs, including Prisma migrations, can break the environment during automatic deployment, so please ask the user for permission before proceeding.
-- After making logic changes, run `npm run lint` in the project root before pushing.
+- After making logic changes, run `pnpm lint` (Biome) in the project root before pushing.
+- Use `pnpm lint:fix` to automatically fix linting and formatting issues.
 
 ## Common Commands
 
@@ -155,7 +156,14 @@ const variants = cva(
 pnpm dev          # Start development server with Turbopack
 pnpm build        # Build for production with Turbopack
 pnpm start        # Start production server
-pnpm lint         # Run ESLint
+```
+
+### Linting & Formatting (Biome)
+```bash
+pnpm lint         # Check for linting and formatting issues
+pnpm lint:fix     # Auto-fix linting and formatting issues
+pnpm format       # Format all files
+pnpm check        # CI/CD check (same as lint)
 ```
 
 ### Database (Prisma + PostgreSQL via Supabase)
@@ -176,6 +184,7 @@ pnpm db:seed      # Run database seed script
 - **Database**: PostgreSQL (via Supabase) with Prisma ORM
 - **Authentication**: Supabase Auth (currently disabled in middleware)
 - **Styling**: Tailwind CSS 4, shadcn/ui components
+- **Linting/Formatting**: Biome (10-100x faster than ESLint)
 - **State Management**: React Context (see `useJournal` hook)
 - **UI Libraries**: Radix UI primitives, lucide-react icons, sonner for toasts
 

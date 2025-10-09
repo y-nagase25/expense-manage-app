@@ -1,4 +1,4 @@
-import { TransactionType, AccountTitle, TaxCategory, JournalEntry } from '@prisma/client';
+import { type AccountTitle, type JournalEntry, TaxCategory, TransactionType } from '@prisma/client';
 
 // Re-export so the rest of the app can import from your local module if preferred.
 // export type { TransactionType, AccountTitle, TaxCategory };
@@ -47,13 +47,12 @@ export type FieldProps = {
     children: React.ReactNode;
     label: string;
     className?: string;
-}
+};
 
 export type BaseResponse = {
     success: boolean;
     message: string;
-}
+};
 export type FormResponse = BaseResponse & {
     field?: FormData;
-}
-
+};

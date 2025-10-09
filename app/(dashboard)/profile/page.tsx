@@ -1,17 +1,17 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Separator } from "@/components/ui/separator"
-import { createServerSupabase } from "@/utils/supabase/server"
-import { redirect } from "next/navigation"
+import { redirect } from 'next/navigation';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Separator } from '@/components/ui/separator';
+import { createServerSupabase } from '@/utils/supabase/server';
 
 async function ProfilePage() {
-    const supabase = await createServerSupabase()
+    const supabase = await createServerSupabase();
 
     const {
         data: { user },
-    } = await supabase.auth.getUser()
+    } = await supabase.auth.getUser();
 
     if (!user) {
-        redirect('/login')
+        redirect('/login');
     }
 
     return (
@@ -20,10 +20,11 @@ async function ProfilePage() {
             <Separator />
             <div className="flex flex-col items-center gap-3">
                 <Avatar className="h-20 w-20">
-                    <AvatarImage src={user?.user_metadata.avatar_url} alt={user?.user_metadata.name} />
-                    <AvatarFallback>
-                        {user?.email?.charAt(0).toUpperCase()}
-                    </AvatarFallback>
+                    <AvatarImage
+                        src={user?.user_metadata.avatar_url}
+                        alt={user?.user_metadata.name}
+                    />
+                    <AvatarFallback>{user?.email?.charAt(0).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="text-center">
                     <p className="font-medium">{user?.user_metadata.name || 'User'}</p>
@@ -33,7 +34,7 @@ async function ProfilePage() {
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
-export default ProfilePage
+export default ProfilePage;

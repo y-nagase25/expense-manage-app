@@ -1,7 +1,12 @@
-'use client'
+'use client';
 
-import { Menu } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import type { User } from '@supabase/supabase-js';
+import { Menu } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -9,46 +14,38 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import type { User } from '@supabase/supabase-js'
-import { createBrowserSupabase } from '@/utils/supabase/client'
-import Link from 'next/link'
+} from '@/components/ui/dropdown-menu';
+import { createBrowserSupabase } from '@/utils/supabase/client';
 
 interface HeaderProps {
-    onMenuClick: () => void
+    onMenuClick: () => void;
 }
 
 export function Header({ onMenuClick }: HeaderProps) {
-    const [user, setUser] = useState<User | null>(null)
-    const router = useRouter()
-    const supabase = createBrowserSupabase()
+    const [user, setUser] = useState<User | null>(null);
+    const router = useRouter();
+    const supabase = createBrowserSupabase();
 
     useEffect(() => {
         const getUser = async () => {
-            const { data: { user } } = await supabase.auth.getUser()
-            setUser(user)
-        }
-        getUser()
-    }, [supabase.auth])
+            const {
+                data: { user },
+            } = await supabase.auth.getUser();
+            setUser(user);
+        };
+        getUser();
+    }, [supabase.auth]);
 
     const handleSignOut = async () => {
-        await supabase.auth.signOut()
-        router.push('/login')
-        router.refresh()
-    }
+        await supabase.auth.signOut();
+        router.push('/login');
+        router.refresh();
+    };
 
     return (
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container flex h-16 items-center">
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    className="mr-2 md:mr-4"
-                    onClick={onMenuClick}
-                >
+                <Button variant="ghost" size="icon" className="mr-2 md:mr-4" onClick={onMenuClick}>
                     <Menu className="h-6 w-6" />
                 </Button>
 
@@ -62,7 +59,10 @@ export function Header({ onMenuClick }: HeaderProps) {
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                                     <Avatar>
-                                        <AvatarImage src={user.user_metadata?.avatar_url} alt={user.email || ''} />
+                                        <AvatarImage
+                                            src={user.user_metadata?.avatar_url}
+                                            alt={user.email || ''}
+                                        />
                                         <AvatarFallback>
                                             {user.email?.charAt(0).toUpperCase()}
                                         </AvatarFallback>
@@ -90,5 +90,5 @@ export function Header({ onMenuClick }: HeaderProps) {
                 </div>
             </div>
         </header>
-    )
+    );
 }
