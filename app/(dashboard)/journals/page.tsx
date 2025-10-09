@@ -14,6 +14,8 @@ import JournalModal from './components/JournalModal';
 import RegisterButton from './components/ResiterButton';
 import TransactionTypeTag from './components/TransactionTypeTag';
 
+export const dynamic = 'force-dynamic';
+
 const JournalPage = async () => {
     const entries = await getJournalEntries();
 
