@@ -182,7 +182,7 @@ pnpm db:seed      # Run database seed script
 ### Tech Stack
 - **Framework**: Next.js 15 (App Router, React 19)
 - **Database**: PostgreSQL (via Supabase) with Prisma ORM
-- **Authentication**: Supabase Auth (currently disabled in middleware)
+- **Authentication**: Supabase Auth (currently enabled in middleware)
 - **Styling**: Tailwind CSS 4, shadcn/ui components
 - **Linting/Formatting**: Biome (10-100x faster than ESLint)
 - **State Management**: React Context (see `useJournal` hook)
@@ -203,11 +203,9 @@ app/
       components/            # Journal-specific components (JournalModal, ActionIcons, etc.)
     profile/                 # User profile page
     layout.tsx              # Dashboard layout with Sidebar
-  components/                # Shared app components
-    form/                    # Form components (Field, Input)
   layout.tsx                # Root layout with ToastProvider
   page.tsx                  # Home page
-  types.ts                  # Type definitions and label mappings for Prisma enums
+  not-found.tsx             # Custom 404 page
 
 components/                 # Global shared components (outside app directory)
   icons/                    # Icon components (GoogleIcon, etc.)
@@ -215,13 +213,14 @@ components/                 # Global shared components (outside app directory)
   AppLayout.tsx             # Main app layout wrapper
   Header.tsx                # Global header component
   Sidebar.tsx               # Navigation sidebar
+  SidebarContent.tsx        # Sidebar content component
   Footer.tsx                # Global footer component
 
 lib/
   actions.ts                # Server Actions for journal CRUD operations
   db.ts                     # Prisma client singleton
   format.ts                 # Formatting utilities
-  types.ts                  # Shared type definitions
+  types.ts                  # Shared type definitions, label mappings for Prisma enums
   utils.ts                  # General utility functions
 
 utils/
@@ -262,27 +261,31 @@ Enums defined in Prisma schema:
    - Pattern: `"use server"` directive, FormData handling, revalidatePath for cache invalidation
    - Example: `createJournalEntry`, `updateJournalEntry`, `deleteJournalEntry`
 
-2. **Type Safety**: Prisma types are re-exported and extended in `app/types.ts`
-   - Label mappings (e.g., `AccountTitleLabel`) for i18n display
+2. **Type Safety**: Prisma types are re-exported and extended in `lib/types.ts`
+   - Label mappings (e.g., `AccountTitleLabel`, `TransactionTypeLabel`, `TaxCategoryLabel`) for i18n display
    - Derived types like `InitialJournalEntry` (omits id, timestamps)
+   - Helper types like `AccountType`, `FormType`, `FieldProps` for UI components
 
-3. **Authentication**: Supabase Auth integration exists but is currently disabled
-   - `middleware.ts:5-6` has `updateSession` commented out
-   - Auth utilities in `utils/supabase/` ready for activation
+3. **Authentication**: Supabase Auth integration is currently enabled
+   - `middleware.ts:5` actively calls `updateSession` for session management
+   - Auth utilities in `utils/supabase/` provide client/server integration
+   - OAuth callback route at `app/(auth)/auth/callback/route.ts`
 
 4. **Modal State**: Journal creation/editing uses a Context pattern
    - `JournalProvider` wraps pages that need modal state
    - `useJournal()` hook provides modal control and form data
 
 5. **Path Aliases**: Uses `@/*` for imports (maps to project root)
-   - Example: `@/lib/actions`, `@/app/types`
+   - Example: `@/lib/actions`, `@/lib/types`, `@/components/ui/button`
 
 ## Environment Variables
 
 Required in `.env`:
 - `DATABASE_URL`: PostgreSQL connection string (pooled)
 - `DIRECT_URL`: Direct database connection (for migrations)
-- Supabase credentials (for auth, when enabled)
+- `NEXT_PUBLIC_SUPABASE_URL`: Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Supabase anonymous key
+- Additional Supabase credentials for authentication
 
 ## Notes
 
