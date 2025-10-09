@@ -1,14 +1,14 @@
-"use server"
+'use server';
 
-import { FormResponse } from "@/lib/types";
-import { prisma } from "@/lib/db"
-import { AccountTitle, Prisma, TaxCategory, TransactionType } from "@prisma/client";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { type AccountTitle, Prisma, type TaxCategory, type TransactionType } from '@prisma/client';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
+import { prisma } from '@/lib/db';
+import type { FormResponse } from '@/lib/types';
 
 export async function getJournalEntries() {
     return await prisma.journalEntry.findMany({
-        orderBy: { occurrenceDate: 'desc' }
+        orderBy: { occurrenceDate: 'desc' },
     });
 }
 
@@ -19,62 +19,65 @@ export async function getJournalEntry(id: string) {
 }
 
 export async function updateJournalEntry(formData: FormData) {
-    const id = formData.get("id") as string;
-    if (!id) throw new Error("Missing journalEntry id");
+    const id = formData.get('id') as string;
+    if (!id) throw new Error('Missing journalEntry id');
 
     try {
         await prisma.journalEntry.update({
             where: { id },
             data: {
-                occurrenceDate: formData.get("occurrenceDate") as string,
-                debitAccount: formData.get("debitAccount") as AccountTitle,
-                debitAmount: getNum(formData, "debitAmount") as number,
-                debitTax: formData.get("debitTax") as TaxCategory,
-                creditAccount: formData.get("creditAccount") as AccountTitle,
-                client: formData.get("client") as string,
-                paymentDate: formData.get("paymentDate") as string,
-                paymentAccount: formData.get("paymentAccount") as string,
-                notes: formData.get("notes") as string,
-            }
+                occurrenceDate: formData.get('occurrenceDate') as string,
+                debitAccount: formData.get('debitAccount') as AccountTitle,
+                debitAmount: getNum(formData, 'debitAmount') as number,
+                debitTax: formData.get('debitTax') as TaxCategory,
+                creditAccount: formData.get('creditAccount') as AccountTitle,
+                client: formData.get('client') as string,
+                paymentDate: formData.get('paymentDate') as string,
+                paymentAccount: formData.get('paymentAccount') as string,
+                notes: formData.get('notes') as string,
+            },
         });
     } catch (error) {
         console.error(error);
         redirect(`/journals/${id}?updated=0`);
     }
     revalidatePath(`/journals/${id}`);
-    revalidatePath("/journals");
+    revalidatePath('/journals');
     redirect(`/journals/${id}?updated=1`);
 }
 
-export async function createJournalEntry(prevState: FormResponse, formData: FormData): Promise<FormResponse> {
+export async function createJournalEntry(
+    prevState: FormResponse,
+    formData: FormData
+): Promise<FormResponse> {
     try {
         await prisma.journalEntry.create({
             data: {
-                transactionType: formData.get("transactionType") as TransactionType,
-                occurrenceDate: formData.get("occurrenceDate") as string,
-                debitAccount: formData.get("debitAccount") as AccountTitle,
-                debitAmount: getNum(formData, "debitAmount") as number,
-                debitTax: formData.get("debitTax") as TaxCategory,
-                creditAccount: formData.get("creditAccount") as AccountTitle,
-                client: formData.get("client") as string,
-                paymentDate: formData.get("paymentDate") as string,
-                paymentAccount: formData.get("paymentAccount") as string,
-                notes: formData.get("notes") as string,
-            }
-        })
-
+                transactionType: formData.get('transactionType') as TransactionType,
+                occurrenceDate: formData.get('occurrenceDate') as string,
+                debitAccount: formData.get('debitAccount') as AccountTitle,
+                debitAmount: getNum(formData, 'debitAmount') as number,
+                debitTax: formData.get('debitTax') as TaxCategory,
+                creditAccount: formData.get('creditAccount') as AccountTitle,
+                client: formData.get('client') as string,
+                paymentDate: formData.get('paymentDate') as string,
+                paymentAccount: formData.get('paymentAccount') as string,
+                notes: formData.get('notes') as string,
+            },
+        });
     } catch (error: unknown) {
         if (error instanceof Error) {
             console.error(error);
             return {
                 success: false,
                 message: 'エラーが発生しました',
-                field: formData
+                field: formData,
             };
-            if (error instanceof Prisma.PrismaClientKnownRequestError) { }
+            if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            }
         }
     }
-    revalidatePath("/journals");
+    revalidatePath('/journals');
 
     return { success: true, message: '仕訳の登録が完了しました' };
 }
@@ -85,7 +88,7 @@ export async function deleteJournalEntry(id: string) {
             where: { id },
         });
     } catch (error: unknown) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
+        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
             // Record to delete not found
             console.warn(`journalEntry not found for id: ${id}`);
         } else {
@@ -93,10 +96,10 @@ export async function deleteJournalEntry(id: string) {
             throw error;
         }
     }
-    revalidatePath("/journals");
+    revalidatePath('/journals');
 }
 
 const getNum = (formData: FormData, k: string) => {
     const v = formData.get(k);
     return typeof v === 'string' ? Number(v) : 0;
-}
+};

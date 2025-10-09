@@ -1,14 +1,19 @@
-"use client";
+'use client';
 
-import { useActionState, useCallback, useEffect } from "react";
+import type { AccountTitle, TaxCategory, TransactionType } from '@prisma/client';
 import { X } from 'lucide-react';
-import { AccountTitleLabel, FormResponse, TaxCategoryLabel, TransactionTypeLabel } from "@/lib/types";
-import { useJournal } from "@/hooks/useJournal";
-import { createJournalEntry } from "@/lib/actions";
-import { Field, SplitField } from "@/app/components/form/Field";
-import { useToast } from "@/hooks/useToast";
-import { AccountTitle, TaxCategory, TransactionType } from "@prisma/client";
-import { Button } from "@/components/ui/button";
+import { useActionState, useCallback, useEffect } from 'react';
+import { Field, SplitField } from '@/app/components/form/Field';
+import { Button } from '@/components/ui/button';
+import { useJournal } from '@/hooks/useJournal';
+import { useToast } from '@/hooks/useToast';
+import { createJournalEntry } from '@/lib/actions';
+import {
+    AccountTitleLabel,
+    type FormResponse,
+    TaxCategoryLabel,
+    TransactionTypeLabel,
+} from '@/lib/types';
 
 const JournalModal = () => {
     const { isModalOpen, closeModal, formData, setFormData } = useJournal();
@@ -22,20 +27,29 @@ const JournalModal = () => {
     // manage form state with a server action
     const [state, formAction] = useActionState(createJournalEntry, initialState);
 
-    const preserveFormData = useCallback((errField: FormData) => {
-        setFormData(prevFormData => ({
-            transactionType: errField.get('transactionType') as TransactionType || prevFormData.transactionType,
-            occurrenceDate: errField.get('occurrenceDate') as string || prevFormData.occurrenceDate,
-            debitAccount: errField.get('debitAccount') as AccountTitle || prevFormData.debitAccount,
-            debitAmount: Number(errField.get('debitAmount')) || prevFormData.debitAmount,
-            debitTax: errField.get('debitTax') as TaxCategory || prevFormData.debitTax,
-            creditAccount: errField.get('creditAccount') as AccountTitle || prevFormData.creditAccount,
-            client: errField.get('client') as string || prevFormData.client,
-            paymentDate: errField.get('paymentDate') as string || prevFormData.paymentDate,
-            paymentAccount: errField.get('paymentAccount') as string || prevFormData.paymentAccount,
-            notes: errField.get('notes') as string || prevFormData.notes,
-        }));
-    }, [setFormData]);
+    const preserveFormData = useCallback(
+        (errField: FormData) => {
+            setFormData((prevFormData) => ({
+                transactionType:
+                    (errField.get('transactionType') as TransactionType) ||
+                    prevFormData.transactionType,
+                occurrenceDate:
+                    (errField.get('occurrenceDate') as string) || prevFormData.occurrenceDate,
+                debitAccount:
+                    (errField.get('debitAccount') as AccountTitle) || prevFormData.debitAccount,
+                debitAmount: Number(errField.get('debitAmount')) || prevFormData.debitAmount,
+                debitTax: (errField.get('debitTax') as TaxCategory) || prevFormData.debitTax,
+                creditAccount:
+                    (errField.get('creditAccount') as AccountTitle) || prevFormData.creditAccount,
+                client: (errField.get('client') as string) || prevFormData.client,
+                paymentDate: (errField.get('paymentDate') as string) || prevFormData.paymentDate,
+                paymentAccount:
+                    (errField.get('paymentAccount') as string) || prevFormData.paymentAccount,
+                notes: (errField.get('notes') as string) || prevFormData.notes,
+            }));
+        },
+        [setFormData]
+    );
 
     // useEffect to show a toast when the form state changes after submission
     useEffect(() => {
@@ -50,12 +64,13 @@ const JournalModal = () => {
         }
     }, [state, showToast, preserveFormData]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    ) => {
         const { name, value } = e.target;
         const newFormData = { ...formData, [name]: value };
         setFormData(newFormData);
     };
-
 
     if (!isModalOpen) return null;
 
@@ -64,8 +79,13 @@ const JournalModal = () => {
             <div className="absolute inset-0 bg-black/50" onClick={closeModal} />
             <div className="relative z-10 w-full max-w-2xl rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800">
                 <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-xl font-semibold text-gray-800 dark:text-white">仕訳を登録</h3>
-                    <button onClick={closeModal} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                    <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
+                        仕訳を登録
+                    </h3>
+                    <button
+                        onClick={closeModal}
+                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                    >
                         <X className="w-6 h-6" />
                     </button>
                 </div>
@@ -80,7 +100,9 @@ const JournalModal = () => {
                                 className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                             >
                                 {Object.entries(TransactionTypeLabel).map(([value, label]) => (
-                                    <option key={value} value={value}>{label}</option>
+                                    <option key={value} value={value}>
+                                        {label}
+                                    </option>
                                 ))}
                             </select>
                         </Field>
@@ -104,7 +126,9 @@ const JournalModal = () => {
                                 className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                             >
                                 {Object.entries(AccountTitleLabel).map(([value, label]) => (
-                                    <option key={value} value={value}>{label}</option>
+                                    <option key={value} value={value}>
+                                        {label}
+                                    </option>
                                 ))}
                             </select>
                         </Field>
@@ -117,26 +141,50 @@ const JournalModal = () => {
                                 className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                             >
                                 {Object.entries(AccountTitleLabel).map(([value, label]) => (
-                                    <option key={value} value={value}>{label}</option>
+                                    <option key={value} value={value}>
+                                        {label}
+                                    </option>
                                 ))}
                             </select>
                         </Field>
-                        <SplitField field={[
-                            {
-                                label: "金額",
-                                children:
-                                    <input type="number" id="debitAmount" name="debitAmount" value={formData.debitAmount} onChange={handleChange} className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white" required />
-                            },
-                            {
-                                label: "税区分",
-                                children:
-                                    <select id="debitTax" name="debitTax" value={formData.debitTax} onChange={handleChange} className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                                        {Object.entries(TaxCategoryLabel).map(([value, label]) => (
-                                            <option key={value} value={value}>{label}</option>
-                                        ))}
-                                    </select>
-                            },
-                        ]} />
+                        <SplitField
+                            field={[
+                                {
+                                    label: '金額',
+                                    children: (
+                                        <input
+                                            type="number"
+                                            id="debitAmount"
+                                            name="debitAmount"
+                                            value={formData.debitAmount}
+                                            onChange={handleChange}
+                                            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                            required
+                                        />
+                                    ),
+                                },
+                                {
+                                    label: '税区分',
+                                    children: (
+                                        <select
+                                            id="debitTax"
+                                            name="debitTax"
+                                            value={formData.debitTax}
+                                            onChange={handleChange}
+                                            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                        >
+                                            {Object.entries(TaxCategoryLabel).map(
+                                                ([value, label]) => (
+                                                    <option key={value} value={value}>
+                                                        {label}
+                                                    </option>
+                                                )
+                                            )}
+                                        </select>
+                                    ),
+                                },
+                            ]}
+                        />
                         <Field label="取引先">
                             <input
                                 type="text"
@@ -176,13 +224,16 @@ const JournalModal = () => {
                                 value={formData.notes ?? ''}
                                 onChange={handleChange}
                                 className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                            >
-                            </textarea>
+                            ></textarea>
                         </Field>
                     </div>
                     <div className="flex items-center justify-end p-4 dark:border-gray-700">
-                        <Button variant="outline" onClick={closeModal}>キャンセル</Button>
-                        <Button type="submit" className="ml-4">登録</Button>
+                        <Button variant="outline" onClick={closeModal}>
+                            キャンセル
+                        </Button>
+                        <Button type="submit" className="ml-4">
+                            登録
+                        </Button>
                     </div>
                 </form>
             </div>
@@ -191,5 +242,3 @@ const JournalModal = () => {
 };
 
 export default JournalModal;
-
-

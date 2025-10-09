@@ -1,14 +1,14 @@
-import { notFound } from "next/navigation";
-import Link from "next/link";
-import { getJournalEntry, updateJournalEntry } from "@/lib/actions";
-import { AccountTitleLabel, AccountType, TaxCategoryLabel } from "@/lib/types";
-import TransactionTypeTag from "../components/TransactionTypeTag";
-import ClientToastOnUpdated from "../components/ClientToastOnUpdated";
-import { JournalEntry } from "@prisma/client";
-import { Field, SplitField } from "@/app/components/form/Field";
-import { InputSelect, InputText } from "@/app/components/form/Input";
-import { formatCurrency, formatToJST } from "@/lib/format";
-import { Button } from "@/components/ui/button";
+import type { JournalEntry } from '@prisma/client';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { Field, SplitField } from '@/app/components/form/Field';
+import { InputSelect, InputText } from '@/app/components/form/Input';
+import { Button } from '@/components/ui/button';
+import { getJournalEntry, updateJournalEntry } from '@/lib/actions';
+import { formatCurrency, formatToJST } from '@/lib/format';
+import { AccountTitleLabel, type AccountType, TaxCategoryLabel } from '@/lib/types';
+import ClientToastOnUpdated from '../components/ClientToastOnUpdated';
+import TransactionTypeTag from '../components/TransactionTypeTag';
 
 export default async function JournalDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
@@ -17,11 +17,16 @@ export default async function JournalDetailPage({ params }: { params: Promise<{ 
 
     return (
         <div className="max-w-3xl mx-auto p-6">
-            <Link href="/journals" className="inline-flex items-center text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 mb-4">
+            <Link
+                href="/journals"
+                className="inline-flex items-center text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 mb-4"
+            >
                 <span className="mr-2">＜</span>戻る
             </Link>
             <h1 className="text-2xl font-semibold mb-6">仕訳詳細</h1>
-            <div className="text-sm text-gray-500 my-2 text-right">最終更新：{formatToJST(entry.updatedAt, false)}</div>
+            <div className="text-sm text-gray-500 my-2 text-right">
+                最終更新：{formatToJST(entry.updatedAt, false)}
+            </div>
 
             <ClientToastOnUpdated />
             <form action={updateJournalEntry}>
@@ -31,37 +36,76 @@ export default async function JournalDetailPage({ params }: { params: Promise<{ 
                         <TransactionTypeTag entry={entry} />
                     </Field>
                     <Field label="発生日">
-                        <InputText type="date" id="occurrenceDate" name="occurrenceDate" defaultValue={entry.occurrenceDate} />
+                        <InputText
+                            type="date"
+                            id="occurrenceDate"
+                            name="occurrenceDate"
+                            defaultValue={entry.occurrenceDate}
+                        />
                     </Field>
                     <Field label="借方科目">
-                        <InputSelect labelMap={AccountTitleLabel} id="debitAccount" name="debitAccount" defaultValue={entry.debitAccount} />
+                        <InputSelect
+                            labelMap={AccountTitleLabel}
+                            id="debitAccount"
+                            name="debitAccount"
+                            defaultValue={entry.debitAccount}
+                        />
                     </Field>
                     <Field label="貸方科目">
-                        <InputSelect labelMap={AccountTitleLabel} id="creditAccount" name="creditAccount" defaultValue={entry.creditAccount} />
+                        <InputSelect
+                            labelMap={AccountTitleLabel}
+                            id="creditAccount"
+                            name="creditAccount"
+                            defaultValue={entry.creditAccount}
+                        />
                     </Field>
 
-                    <SplitField field={[
-                        {
-                            label: '金額',
-                            children: <InputText id="debitAmount" name="debitAmount" defaultValue={String(entry.debitAmount)} />
-                        },
-                        {
-                            label: '税区分',
-                            children: <InputSelect labelMap={TaxCategoryLabel} id="debitTax" name="debitTax" defaultValue={entry.debitTax} />
-                        },
-                    ]} />
+                    <SplitField
+                        field={[
+                            {
+                                label: '金額',
+                                children: (
+                                    <InputText
+                                        id="debitAmount"
+                                        name="debitAmount"
+                                        defaultValue={String(entry.debitAmount)}
+                                    />
+                                ),
+                            },
+                            {
+                                label: '税区分',
+                                children: (
+                                    <InputSelect
+                                        labelMap={TaxCategoryLabel}
+                                        id="debitTax"
+                                        name="debitTax"
+                                        defaultValue={entry.debitTax}
+                                    />
+                                ),
+                            },
+                        ]}
+                    />
 
                     <Field label="取引先">
                         <InputText id="client" name="client" defaultValue={entry.client} />
                     </Field>
                     <Field label="決済日">
-                        <InputText type="date" id="paymentDate" name="paymentDate" defaultValue={entry.paymentDate} />
+                        <InputText
+                            type="date"
+                            id="paymentDate"
+                            name="paymentDate"
+                            defaultValue={entry.paymentDate}
+                        />
                     </Field>
                     <Field label="決済口座">
-                        <InputText id="paymentAccount" name="paymentAccount" defaultValue={entry.paymentAccount} />
+                        <InputText
+                            id="paymentAccount"
+                            name="paymentAccount"
+                            defaultValue={entry.paymentAccount}
+                        />
                     </Field>
                     <Field label="備考" className="sm:col-span-2">
-                        <InputText id="notes" name="notes" defaultValue={entry.notes ?? ""} />
+                        <InputText id="notes" name="notes" defaultValue={entry.notes ?? ''} />
                     </Field>
                 </div>
                 <div className="my-8">
@@ -79,7 +123,7 @@ const JournalPreview = ({ entry }: { entry: JournalEntry }) => {
         <table className="w-full text-sm border-collapse">
             <thead>
                 <tr>
-                    <th className="border px-2 py-1 text-left"></th>
+                    <th className="border px-2 py-1 text-left" />
                     <th className="border px-2 py-1 text-left">借方</th>
                     <th className="border px-2 py-1 text-left">貸方</th>
                 </tr>
@@ -93,22 +137,24 @@ const JournalPreview = ({ entry }: { entry: JournalEntry }) => {
                 <tr>
                     <td className="border px-2 py-1">{entry.occurrenceDate}</td>
                     <td className="border px-2 py-1">
-                        {AccountTitleLabel[entry.debitAccount]}<br />
-                        {formatCurrency(entry.debitAmount)}
-                        （{taxCategoryClassify(entry, 'DEBIT')}）<br />
+                        {AccountTitleLabel[entry.debitAccount]}
+                        <br />
+                        {formatCurrency(entry.debitAmount)}（{taxCategoryClassify(entry, 'DEBIT')}）
+                        <br />
                         {entry.client}
                     </td>
                     <td className="border px-2 py-1">
-                        {AccountTitleLabel[entry.creditAccount]}<br />
-                        {formatCurrency(entry.debitAmount)}
-                        （{taxCategoryClassify(entry, 'CREDIT')}）<br />
+                        {AccountTitleLabel[entry.creditAccount]}
+                        <br />
+                        {formatCurrency(entry.debitAmount)}（{taxCategoryClassify(entry, 'CREDIT')}
+                        ）<br />
                         {entry.client}
                     </td>
                 </tr>
             </tbody>
         </table>
     );
-}
+};
 
 function taxCategoryClassify(entry: JournalEntry, accoutType: AccountType): string {
     if (accoutType === 'DEBIT') {

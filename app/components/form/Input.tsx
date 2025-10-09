@@ -1,4 +1,4 @@
-import { FormType } from "@/lib/types";
+import type { FormType } from '@/lib/types';
 
 type InputTextProps = {
     type?: FormType;
@@ -19,7 +19,7 @@ export const InputText = ({ type = 'text', id, name, defaultValue, ...props }: I
             {...props}
         />
     );
-}
+};
 
 type InputSelectProps = {
     labelMap: Record<string, string>;
@@ -38,8 +38,10 @@ export const InputSelect = ({ labelMap, id, name, defaultValue, ...props }: Inpu
             {...props}
         >
             {Object.entries(labelMap).map(([value, label]) => (
-                <option key={value} value={value}>{label}</option>
+                <option key={value} value={value}>
+                    {label}
+                </option>
             ))}
         </select>
     );
-}
+};

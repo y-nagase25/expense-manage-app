@@ -1,16 +1,11 @@
-'use client'
+'use client';
 
-import { Home, Settings, User, FileText } from 'lucide-react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { cn } from '@/lib/utils'
-import { Separator } from '@/components/ui/separator'
-import {
-    Sheet,
-    SheetContent,
-    SheetHeader,
-    SheetTitle,
-} from '@/components/ui/sheet'
+import { FileText, Home, Settings, User } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Separator } from '@/components/ui/separator';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { cn } from '@/lib/utils';
 
 const menuItems = [
     {
@@ -33,23 +28,23 @@ const menuItems = [
         icon: Settings,
         href: '/settings',
     },
-]
+];
 
 interface SidebarProps {
-    open: boolean
-    onClose: () => void
+    open: boolean;
+    onClose: () => void;
 }
 
 export function Sidebar({ open, onClose }: SidebarProps) {
-    const pathname = usePathname()
+    const pathname = usePathname();
 
     const SidebarContent = () => (
         <div className="flex h-full flex-col">
             <div className="flex-1 overflow-auto py-4">
                 <nav className="space-y-1 px-2">
                     {menuItems.map((item) => {
-                        const Icon = item.icon
-                        const isActive = pathname === item.href
+                        const Icon = item.icon;
+                        const isActive = pathname === item.href;
 
                         return (
                             <Link
@@ -66,7 +61,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                                 <Icon className="h-5 w-5" />
                                 {item.title}
                             </Link>
-                        )
+                        );
                     })}
                 </nav>
             </div>
@@ -74,12 +69,10 @@ export function Sidebar({ open, onClose }: SidebarProps) {
             <Separator />
 
             <div className="p-4">
-                <p className="text-xs text-muted-foreground">
-                    v1.0.0
-                </p>
+                <p className="text-xs text-muted-foreground">v1.0.0</p>
             </div>
         </div>
-    )
+    );
 
     return (
         <>
@@ -103,5 +96,5 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                 <SidebarContent />
             </aside>
         </>
-    )
+    );
 }

@@ -1,7 +1,9 @@
-"use client";
+'use client';
 
-import { GoogleIcon } from "@/components/icons/GoogleIcon";
-import { Button } from "@/components/ui/button";
+import { User } from 'lucide-react';
+import { Suspense, useState } from 'react';
+import { GoogleIcon } from '@/components/icons/GoogleIcon';
+import { Button } from '@/components/ui/button';
 import {
     Card,
     CardAction,
@@ -9,18 +11,16 @@ import {
     CardDescription,
     CardFooter,
     CardHeader,
-    CardTitle
-} from "@/components/ui/card";
-import { createBrowserSupabase } from "@/utils/supabase/client";
-import { useToast } from "@/hooks/useToast";
-import { User } from "lucide-react";
-import { useState, Suspense } from "react";
-import { LoginErrorHandler } from "./components/LoginErrorHandler";
+    CardTitle,
+} from '@/components/ui/card';
+import { useToast } from '@/hooks/useToast';
+import { createBrowserSupabase } from '@/utils/supabase/client';
+import { LoginErrorHandler } from './components/LoginErrorHandler';
 
 const links = [
     { label: '利用規約', url: '/term' },
     { label: 'プライバシーポリシー', url: '/privacy' },
-]
+];
 
 const LoginPage = () => {
     const supabase = createBrowserSupabase();
@@ -35,7 +35,7 @@ const LoginPage = () => {
                 provider: 'google',
                 options: {
                     redirectTo: `${window.location.origin}/auth/callback`,
-                }
+                },
             });
 
             if (error) {
@@ -46,7 +46,11 @@ const LoginPage = () => {
             // If successful, user will be redirected, so don't setIsLoading(false)
         } catch (error) {
             console.error('Unexpected error during sign-in:', error);
-            showToast('error', 'ログインに失敗しました', '予期しないエラーが発生しました。しばらくしてから再度お試しください。');
+            showToast(
+                'error',
+                'ログインに失敗しました',
+                '予期しないエラーが発生しました。しばらくしてから再度お試しください。'
+            );
             setIsLoading(false);
         }
     }
@@ -67,7 +71,12 @@ const LoginPage = () => {
                 </CardDescription>
             </CardContent>
             <CardFooter className="flex-col gap-2">
-                <Button variant="outline" className="w-full" onClick={signInWithGoogle} disabled={isLoading}>
+                <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={signInWithGoogle}
+                    disabled={isLoading}
+                >
                     <GoogleIcon />
                     {isLoading ? 'ログイン中...' : 'Googleでログイン'}
                 </Button>
@@ -81,6 +90,6 @@ const LoginPage = () => {
             </CardFooter>
         </Card>
     );
-}
+};
 
 export default LoginPage;
