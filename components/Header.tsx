@@ -44,8 +44,14 @@ export function Header({ onMenuClick }: HeaderProps) {
 
     return (
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div className="container flex h-16 items-center">
-                <Button variant="ghost" size="icon" className="mr-2 md:mr-4" onClick={onMenuClick}>
+            <div className="flex h-16 items-center px-4 md:px-6">
+                {/* Mobile: Hamburger menu button */}
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={onMenuClick}
+                    className="mr-2 md:hidden"
+                >
                     <Menu className="h-6 w-6" />
                 </Button>
 
@@ -69,7 +75,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                                     </Avatar>
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
+                            <DropdownMenuContent align="end" className="mr-2">
                                 <DropdownMenuLabel>
                                     <div className="flex flex-col space-y-1">
                                         <p className="text-sm font-medium leading-none">
@@ -82,7 +88,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem onClick={handleSignOut}>
-                                    Sign out
+                                    ログアウト
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>

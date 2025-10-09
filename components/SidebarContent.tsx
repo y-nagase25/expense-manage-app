@@ -4,32 +4,31 @@ import { FileText, Home, Settings, User } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Separator } from './ui/separator';
 
 const menuItems = [
     {
-        title: 'Home',
+        title: 'ホーム',
         icon: Home,
         href: '/',
     },
     {
-        title: 'Journals',
+        title: '仕訳帳',
         icon: FileText,
         href: '/journals',
     },
     {
-        title: 'Profile',
+        title: 'アカウント',
         icon: User,
         href: '/profile',
     },
     {
-        title: 'Settings',
+        title: '設定',
         icon: Settings,
         href: '/settings',
     },
 ];
 
-export function SidebarContent({ onClose }: { onClose: () => void }) {
+export function SidebarContent({ onClose }: { onClose?: () => void }) {
     const pathname = usePathname();
 
     return (
@@ -58,12 +57,6 @@ export function SidebarContent({ onClose }: { onClose: () => void }) {
                         );
                     })}
                 </nav>
-            </div>
-
-            <Separator />
-
-            <div className="p-4">
-                <p className="text-xs text-muted-foreground">v1.0.0</p>
             </div>
         </div>
     );

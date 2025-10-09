@@ -31,7 +31,7 @@ export default function Home() {
     const { pending } = useFormStatus();
 
     return (
-        <>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
             <h2>Login</h2>
             <Link href="/login" className="text-blue-500">
                 Login
@@ -83,6 +83,6 @@ export default function Home() {
                     {pending ? '送信中...' : '登録'}
                 </Button>
             </form>
-        </>
+        </div>
     );
 }

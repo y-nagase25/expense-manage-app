@@ -1,16 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header';
 import { Sidebar } from '@/components/Sidebar';
-import { cn } from '@/lib/utils';
 
 interface AppLayoutProps {
     children: React.ReactNode;
 }
 
 export function AppLayout({ children }: AppLayoutProps) {
+    // Mobile sidebar state (closed by default)
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
@@ -18,17 +17,15 @@ export function AppLayout({ children }: AppLayoutProps) {
 
     return (
         <div className="relative min-h-screen flex flex-col">
+            {/* PC: Header always visible, Mobile: Hidden */}
             <Header onMenuClick={toggleSidebar} />
+
+            {/* PC: Sidebar always visible, Mobile: Toggle with hamburger */}
             <Sidebar open={sidebarOpen} onClose={closeSidebar} />
-            <main
-                className={cn(
-                    'flex-1 transition-all duration-300',
-                    sidebarOpen ? 'md:ml-64' : 'md:ml-0'
-                )}
-            >
-                <div className="container py-6 md:py-10">{children}</div>
-            </main>
-            <Footer />
+
+            {/* PC: Content with left margin for sidebar, Mobile: Full width */}
+            <main className="flex-1 py-6 md:py-10 md:ml-64">{children}</main>
+            {/* <Footer /> */}
         </div>
     );
 }
