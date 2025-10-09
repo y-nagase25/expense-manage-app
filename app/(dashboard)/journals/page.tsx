@@ -21,7 +21,7 @@ const JournalPage = async () => {
 
     return (
         <JournalProvider>
-            <div className="container mx-auto">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-2xl font-bold">仕訳帳</h1>
                     <RegisterButton />
