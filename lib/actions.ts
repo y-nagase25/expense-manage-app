@@ -50,6 +50,8 @@ export async function createJournalEntry(
     prevState: FormResponse,
     formData: FormData
 ): Promise<FormResponse> {
+    // TODO: validation check
+    console.log(prevState);
     try {
         await prisma.journalEntry.create({
             data: {
@@ -73,8 +75,6 @@ export async function createJournalEntry(
                 message: 'エラーが発生しました',
                 field: formData,
             };
-            if (error instanceof Prisma.PrismaClientKnownRequestError) {
-            }
         }
     }
     revalidatePath('/journals');

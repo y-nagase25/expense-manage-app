@@ -26,7 +26,8 @@
       "correctness": {
         "noUnusedVariables": "warn",
         "useExhaustiveDependencies": "warn",
-        "useHookAtTopLevel": "error"
+        "useHookAtTopLevel": "error",
+        "useUniqueElementIds": "off"
       },
       "security": {
         "noDangerouslySetInnerHtml": "warn"
@@ -41,7 +42,8 @@
         "noArrayIndexKey": "warn",
         "noDebugger": "warn",
         "noDoubleEquals": "error",
-        "noExplicitAny": "warn"
+        "noExplicitAny": "warn",
+        "noUnknownAtRules": "off"
       }
     }
   },

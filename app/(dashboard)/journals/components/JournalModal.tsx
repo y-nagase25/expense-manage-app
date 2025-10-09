@@ -1,29 +1,34 @@
-"use client";
+'use client';
 
-import { useActionState, useCallback, useEffect } from "react";
-import { AccountTitleLabel, FormResponse, TaxCategoryLabel, TransactionTypeLabel } from "@/lib/types";
-import { useJournal } from "@/hooks/useJournal";
-import { createJournalEntry } from "@/lib/actions";
-import { useToast } from "@/hooks/useToast";
-import { AccountTitle, TaxCategory, TransactionType } from "@prisma/client";
-import { Button } from "@/components/ui/button";
+import type { AccountTitle, TaxCategory, TransactionType } from '@prisma/client';
+import { useActionState, useCallback, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
 import {
     Dialog,
     DialogContent,
     DialogFooter,
     DialogHeader,
     DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { useJournal } from '@/hooks/useJournal';
+import { useToast } from '@/hooks/useToast';
+import { createJournalEntry } from '@/lib/actions';
+import {
+    AccountTitleLabel,
+    type FormResponse,
+    TaxCategoryLabel,
+    TransactionTypeLabel,
+} from '@/lib/types';
 
 const JournalModal = () => {
     const { isModalOpen, closeModal, formData, setFormData } = useJournal();
@@ -37,20 +42,29 @@ const JournalModal = () => {
     // manage form state with a server action
     const [state, formAction] = useActionState(createJournalEntry, initialState);
 
-    const preserveFormData = useCallback((errField: FormData) => {
-        setFormData(prevFormData => ({
-            transactionType: errField.get('transactionType') as TransactionType || prevFormData.transactionType,
-            occurrenceDate: errField.get('occurrenceDate') as string || prevFormData.occurrenceDate,
-            debitAccount: errField.get('debitAccount') as AccountTitle || prevFormData.debitAccount,
-            debitAmount: Number(errField.get('debitAmount')) || prevFormData.debitAmount,
-            debitTax: errField.get('debitTax') as TaxCategory || prevFormData.debitTax,
-            creditAccount: errField.get('creditAccount') as AccountTitle || prevFormData.creditAccount,
-            client: errField.get('client') as string || prevFormData.client,
-            paymentDate: errField.get('paymentDate') as string || prevFormData.paymentDate,
-            paymentAccount: errField.get('paymentAccount') as string || prevFormData.paymentAccount,
-            notes: errField.get('notes') as string || prevFormData.notes,
-        }));
-    }, [setFormData]);
+    const preserveFormData = useCallback(
+        (errField: FormData) => {
+            setFormData((prevFormData) => ({
+                transactionType:
+                    (errField.get('transactionType') as TransactionType) ||
+                    prevFormData.transactionType,
+                occurrenceDate:
+                    (errField.get('occurrenceDate') as string) || prevFormData.occurrenceDate,
+                debitAccount:
+                    (errField.get('debitAccount') as AccountTitle) || prevFormData.debitAccount,
+                debitAmount: Number(errField.get('debitAmount')) || prevFormData.debitAmount,
+                debitTax: (errField.get('debitTax') as TaxCategory) || prevFormData.debitTax,
+                creditAccount:
+                    (errField.get('creditAccount') as AccountTitle) || prevFormData.creditAccount,
+                client: (errField.get('client') as string) || prevFormData.client,
+                paymentDate: (errField.get('paymentDate') as string) || prevFormData.paymentDate,
+                paymentAccount:
+                    (errField.get('paymentAccount') as string) || prevFormData.paymentAccount,
+                notes: (errField.get('notes') as string) || prevFormData.notes,
+            }));
+        },
+        [setFormData]
+    );
 
     // useEffect to show a toast when the form state changes after submission
     useEffect(() => {
@@ -89,14 +103,18 @@ const JournalModal = () => {
                             <Select
                                 name="transactionType"
                                 value={formData.transactionType}
-                                onValueChange={(value) => handleSelectChange('transactionType', value)}
+                                onValueChange={(value) =>
+                                    handleSelectChange('transactionType', value)
+                                }
                             >
                                 <SelectTrigger id="transactionType">
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {Object.entries(TransactionTypeLabel).map(([value, label]) => (
-                                        <SelectItem key={value} value={value}>{label}</SelectItem>
+                                        <SelectItem key={value} value={value}>
+                                            {label}
+                                        </SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
@@ -126,7 +144,9 @@ const JournalModal = () => {
                                 </SelectTrigger>
                                 <SelectContent>
                                     {Object.entries(AccountTitleLabel).map(([value, label]) => (
-                                        <SelectItem key={value} value={value}>{label}</SelectItem>
+                                        <SelectItem key={value} value={value}>
+                                            {label}
+                                        </SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
@@ -137,14 +157,18 @@ const JournalModal = () => {
                             <Select
                                 name="creditAccount"
                                 value={formData.creditAccount}
-                                onValueChange={(value) => handleSelectChange('creditAccount', value)}
+                                onValueChange={(value) =>
+                                    handleSelectChange('creditAccount', value)
+                                }
                             >
                                 <SelectTrigger id="creditAccount">
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {Object.entries(AccountTitleLabel).map(([value, label]) => (
-                                        <SelectItem key={value} value={value}>{label}</SelectItem>
+                                        <SelectItem key={value} value={value}>
+                                            {label}
+                                        </SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
@@ -174,7 +198,9 @@ const JournalModal = () => {
                                 </SelectTrigger>
                                 <SelectContent>
                                     {Object.entries(TaxCategoryLabel).map(([value, label]) => (
-                                        <SelectItem key={value} value={value}>{label}</SelectItem>
+                                        <SelectItem key={value} value={value}>
+                                            {label}
+                                        </SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>

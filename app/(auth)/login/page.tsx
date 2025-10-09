@@ -81,8 +81,8 @@ const LoginPage = () => {
                     {isLoading ? 'ログイン中...' : 'Googleでログイン'}
                 </Button>
                 <CardAction>
-                    {links.map((link, i) => (
-                        <Button asChild variant="link" key={i}>
+                    {links.map((link, _i) => (
+                        <Button asChild variant="link" key={link.url}>
                             <a href={link.url}>{link.label}</a>
                         </Button>
                     ))}

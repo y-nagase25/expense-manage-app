@@ -1,21 +1,16 @@
-import { notFound } from "next/navigation";
-import Link from "next/link";
-import { getJournalEntry, updateJournalEntry } from "@/lib/actions";
-import { AccountTitleLabel, AccountType, TaxCategoryLabel } from "@/lib/types";
-import TransactionTypeTag from "../components/TransactionTypeTag";
-import ClientToastOnUpdated from "../components/ClientToastOnUpdated";
-import { JournalEntry } from "@prisma/client";
-import { formatCurrency, formatToJST } from "@/lib/format";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import type { JournalEntry } from '@prisma/client';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import {
     Table,
     TableBody,
@@ -23,7 +18,12 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
+import { getJournalEntry, updateJournalEntry } from '@/lib/actions';
+import { formatCurrency, formatToJST } from '@/lib/format';
+import { AccountTitleLabel, type AccountType, TaxCategoryLabel } from '@/lib/types';
+import ClientToastOnUpdated from '../components/ClientToastOnUpdated';
+import TransactionTypeTag from '../components/TransactionTypeTag';
 
 export default async function JournalDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
@@ -32,7 +32,10 @@ export default async function JournalDetailPage({ params }: { params: Promise<{ 
 
     return (
         <div className="max-w-3xl mx-auto p-6">
-            <Link href="/journals" className="inline-flex items-center text-primary hover:text-primary/80 mb-4">
+            <Link
+                href="/journals"
+                className="inline-flex items-center text-primary hover:text-primary/80 mb-4"
+            >
                 <span className="mr-2">＜</span>戻る
             </Link>
             <h1 className="text-2xl font-semibold mb-6">仕訳詳細</h1>
@@ -121,12 +124,7 @@ export default async function JournalDetailPage({ params }: { params: Promise<{ 
 
                     <div className="space-y-2">
                         <Label htmlFor="client">取引先</Label>
-                        <Input
-                            type="text"
-                            id="client"
-                            name="client"
-                            defaultValue={entry.client}
-                        />
+                        <Input type="text" id="client" name="client" defaultValue={entry.client} />
                     </div>
 
                     <div className="space-y-2">
@@ -155,7 +153,7 @@ export default async function JournalDetailPage({ params }: { params: Promise<{ 
                             type="text"
                             id="notes"
                             name="notes"
-                            defaultValue={entry.notes ?? ""}
+                            defaultValue={entry.notes ?? ''}
                         />
                     </div>
                 </div>
@@ -177,7 +175,7 @@ const JournalPreview = ({ entry }: { entry: JournalEntry }) => {
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead></TableHead>
+                        <TableHead />
                         <TableHead>借方</TableHead>
                         <TableHead>貸方</TableHead>
                     </TableRow>
@@ -191,15 +189,17 @@ const JournalPreview = ({ entry }: { entry: JournalEntry }) => {
                     <TableRow>
                         <TableCell>{entry.occurrenceDate}</TableCell>
                         <TableCell>
-                            {AccountTitleLabel[entry.debitAccount]}<br />
-                            {formatCurrency(entry.debitAmount)}
-                            （{taxCategoryClassify(entry, 'DEBIT')}）<br />
+                            {AccountTitleLabel[entry.debitAccount]}
+                            <br />
+                            {formatCurrency(entry.debitAmount)}（
+                            {taxCategoryClassify(entry, 'DEBIT')}）<br />
                             {entry.client}
                         </TableCell>
                         <TableCell>
-                            {AccountTitleLabel[entry.creditAccount]}<br />
-                            {formatCurrency(entry.debitAmount)}
-                            （{taxCategoryClassify(entry, 'CREDIT')}）<br />
+                            {AccountTitleLabel[entry.creditAccount]}
+                            <br />
+                            {formatCurrency(entry.debitAmount)}（
+                            {taxCategoryClassify(entry, 'CREDIT')}）<br />
                             {entry.client}
                         </TableCell>
                     </TableRow>
@@ -207,7 +207,7 @@ const JournalPreview = ({ entry }: { entry: JournalEntry }) => {
             </Table>
         </div>
     );
-}
+};
 
 function taxCategoryClassify(entry: JournalEntry, accoutType: AccountType): string {
     if (accoutType === 'DEBIT') {
