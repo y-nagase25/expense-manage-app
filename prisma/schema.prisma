@@ -11,58 +11,121 @@ datasource db {
     directUrl = env("DIRECT_URL")
 }
 
-enum TransactionType {
-    INCOME
-    EXPENSE
-}
-
-enum AccountTitle {
-    SALES
-    COMMUNICATION
-    SUPPLIES
-    RENT
-    UTILITIES
-    ADVERTISING
-    TRANSPORTION
-    DATING
-    CASH
-    BANK_DEPOSIT
-    ACCOUNTS_RECEIVABLE
-    CREDIT_CARD
-    OWNERS_DEBID
-    OWNERS_CREDIT
-}
-
-enum TaxCategory {
-    TAXABLE_10
-    TAXABLE_8
-    NON_TAXABLE
-    TAX_EXEMPT
-}
-
-model JournalEntry {
-    id              String          @id @default(cuid())
-    transactionType TransactionType
-    occurrenceDate  String
-    debitAccount    AccountTitle
-    debitAmount     Int
-    debitTax        TaxCategory
-    creditAccount   AccountTitle
-    client          String
-    paymentDate     String
-    paymentAccount  String
-    notes           String?
-    createdAt       DateTime        @default(now())
-    updatedAt       DateTime        @updatedAt
-
-    @@map("journal_entries")
-}
-
 model Profile {
     id        String   @id @db.Uuid
     email     String?
     createdAt DateTime @default(now()) @map("created_at")
-    updatedAt DateTime @default(now()) @map("updated_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
 
     @@map("profiles")
+}
+
+/// 仕訳明細テーブル
+model Journal {
+    /// 一意識別子
+    id             String          @id @default(cuid())
+    /// 仕訳日（取引発生日）
+    date           DateTime        @db.Date
+    /// 支出・収入の区分
+    type           TransactionType
+    /// 勘定科目ID
+    accountId      String          @map("account_id")
+    account        Account         @relation(fields: [accountId], references: [id])
+    /// 金額
+    amount         Decimal         @db.Decimal(15, 2)
+    /// 入出金があった口座（銀行口座や現金）
+    paymentAccount PaymentAccount  @default(CASH) @map("payment_account")
+    /// 課税区分
+    taxType        TaxType         @default(NONE) @map("tax_type")
+    /// 取引先名（例: 「株式会社◯◯」）
+    clientName     String          @map("client_name")
+    /// 摘要（取引の説明）
+    description    String?         @db.VarChar(500)
+    /// 補助科目（例: プロジェクト名、部門名）
+    subAccount     String?         @map("sub_account")
+    /// 備考（詳細メモ）
+    memo           String?         @db.Text
+    /// 会計年度
+    fiscalYear     Int             @map("fiscal_year")
+    /// 会計期（月次: 1-12）
+    fiscalPeriod   Int             @map("fiscal_period")
+    /// ユーザーID
+    userId         String          @map("user_id")
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@index([userId, date])
+    @@index([userId, fiscalYear, fiscalPeriod])
+    @@map("journals")
+}
+
+/// 勘定科目マスタ
+model Account {
+    id             String          @id @default(cuid())
+    /// 勘定科目コード（例: "101" = 現金）会計ソフト標準に準拠
+    code           String          @unique
+    /// 勘定科目名（例: "現金"）
+    name           String
+    /// 読み仮名（検索用）
+    nameKana       String?         @map("name_kana")
+    /// 科目分類（財務諸表の区分） 資産/負債/純資産/収益/費用
+    category       AccountCategory
+    /// サブカテゴリ（例: 流動資産/固定資産）
+    subCategory    String?         @map("sub_category")
+    /// 貸借対照表・損益計算書の区分
+    reportType     ReportType      @map("report_type")
+    /// 表示順序（財務諸表での並び順）
+    displayOrder   Int             @default(0) @map("display_order")
+    /// デフォルト設定
+    defaultTaxType TaxType         @default(NONE) @map("default_tax_type")
+
+    createdAt DateTime  @default(now()) @map("created_at")
+    updatedAt DateTime  @updatedAt @map("updated_at")
+    Journal   Journal[]
+
+    @@index([code])
+    @@index([category, displayOrder]) // カテゴリ別・順序での取得用
+    @@map("accounts")
+}
+
+// ============================================
+// Enum定義
+// ============================================
+
+enum TransactionType {
+    INCOME // 収入
+    EXPENSE // 支出
+}
+
+enum PaymentAccount {
+    BANKING // 銀行口座
+    CREDIT_CARD // クレジットカード
+    CASH // 現金
+    PRIVATE // プライベート資金
+}
+
+// 勘定科目のカテゴリ
+enum AccountCategory {
+    ASSET // 資産（現金、売掛金、固定資産など）
+    LIABILITY // 負債（買掛金、借入金など）
+    EQUITY // 純資産（資本金、繰越利益など）
+    REVENUE // 収益（売上高、雑収入など）
+    EXPENSE // 費用（仕入、経費、人件費など）
+}
+
+// 財務諸表の区分
+enum ReportType {
+    BS // Balance Sheet（貸借対照表）
+    PL // Profit & Loss（損益計算書）
+}
+
+// 消費税の課税区分
+enum TaxType {
+    TAXABLE_10
+    TAXABLE_8
+    TAX_FREE // 免税（輸出取引など）
+    NON_TAXABLE // 非課税（土地売却、住宅賃貸など）
+    TAX_EXEMPT // 不課税（給与、配当など）
+    NONE // 対象外（科目によっては税金なし）
 }
