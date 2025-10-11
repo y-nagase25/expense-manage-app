@@ -47,8 +47,6 @@ model Journal {
     memo           String?         @db.Text
     /// 会計年度
     fiscalYear     Int             @map("fiscal_year")
-    /// 会計期（月次: 1-12）
-    fiscalPeriod   Int             @map("fiscal_period")
     /// ユーザーID
     userId         String          @map("user_id")
 
@@ -56,7 +54,7 @@ model Journal {
     updatedAt DateTime @updatedAt @map("updated_at")
 
     @@index([userId, date])
-    @@index([userId, fiscalYear, fiscalPeriod])
+    @@index([userId, fiscalYear])
     @@map("journals")
 }
 
@@ -79,6 +77,8 @@ model Account {
     displayOrder   Int             @default(0) @map("display_order")
     /// デフォルト設定
     defaultTaxType TaxType         @default(NONE) @map("default_tax_type")
+    /// 表示フラグ（1: 表示, 0: 非表示）
+    isDisplay      Boolean         @default(false) @map("is_display")
 
     createdAt DateTime  @default(now()) @map("created_at")
     updatedAt DateTime  @updatedAt @map("updated_at")

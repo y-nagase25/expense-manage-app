@@ -67,6 +67,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '流動資産',
         reportType: ReportType.BS,
         displayOrder: 11,
+        isDisplay: true,
         defaultTaxType: TaxType.NONE,
     },
     {
@@ -77,6 +78,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '流動資産',
         reportType: ReportType.BS,
         displayOrder: 12,
+        isDisplay: true,
         defaultTaxType: TaxType.NONE,
     },
     {
@@ -87,6 +89,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '流動資産',
         reportType: ReportType.BS,
         displayOrder: 13,
+        isDisplay: true,
         defaultTaxType: TaxType.NONE,
     },
     {
@@ -185,6 +188,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '流動負債',
         reportType: ReportType.BS,
         displayOrder: 201,
+        isDisplay: true,
         defaultTaxType: TaxType.NONE,
     },
     {
@@ -195,6 +199,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '流動負債',
         reportType: ReportType.BS,
         displayOrder: 202,
+        isDisplay: true,
         defaultTaxType: TaxType.NONE,
     },
     {
@@ -261,6 +266,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '資本',
         reportType: ReportType.BS,
         displayOrder: 401,
+        isDisplay: true,
         defaultTaxType: TaxType.NONE,
     },
     {
@@ -271,6 +277,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '資本',
         reportType: ReportType.BS,
         displayOrder: 402,
+        isDisplay: true,
         defaultTaxType: TaxType.NONE,
     },
     {
@@ -281,6 +288,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '資本',
         reportType: ReportType.BS,
         displayOrder: 403,
+        isDisplay: true,
         defaultTaxType: TaxType.NONE,
     },
     {
@@ -291,6 +299,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '資本',
         reportType: ReportType.BS,
         displayOrder: 404,
+        isDisplay: true,
         defaultTaxType: TaxType.NONE,
     },
 
@@ -305,6 +314,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '営業収益',
         reportType: ReportType.PL,
         displayOrder: 501,
+        isDisplay: true,
         defaultTaxType: TaxType.TAXABLE_10,
     },
     {
@@ -315,6 +325,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '営業収益',
         reportType: ReportType.PL,
         displayOrder: 502,
+        isDisplay: true,
         defaultTaxType: TaxType.TAXABLE_10,
     },
     {
@@ -325,6 +336,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '営業外収益',
         reportType: ReportType.PL,
         displayOrder: 511,
+        isDisplay: true,
         defaultTaxType: TaxType.NON_TAXABLE,
     },
     {
@@ -335,6 +347,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '営業外収益',
         reportType: ReportType.PL,
         displayOrder: 512,
+        isDisplay: true,
         defaultTaxType: TaxType.TAXABLE_10,
     },
 
@@ -389,6 +402,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '販売費及び一般管理費',
         reportType: ReportType.PL,
         displayOrder: 614,
+        isDisplay: true,
         defaultTaxType: TaxType.TAXABLE_10,
     },
     {
@@ -399,6 +413,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '販売費及び一般管理費',
         reportType: ReportType.PL,
         displayOrder: 615,
+        isDisplay: true,
         defaultTaxType: TaxType.TAXABLE_10,
     },
     {
@@ -409,6 +424,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '販売費及び一般管理費',
         reportType: ReportType.PL,
         displayOrder: 616,
+        isDisplay: true,
         defaultTaxType: TaxType.TAXABLE_10,
     },
     {
@@ -419,6 +435,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '販売費及び一般管理費',
         reportType: ReportType.PL,
         displayOrder: 617,
+        isDisplay: true,
         defaultTaxType: TaxType.TAXABLE_10,
     },
     {
@@ -429,6 +446,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '販売費及び一般管理費',
         reportType: ReportType.PL,
         displayOrder: 618,
+        isDisplay: true,
         defaultTaxType: TaxType.TAXABLE_10,
     },
     {
@@ -439,6 +457,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '販売費及び一般管理費',
         reportType: ReportType.PL,
         displayOrder: 619,
+        isDisplay: true,
         defaultTaxType: TaxType.TAXABLE_10,
     },
     {
@@ -449,6 +468,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '販売費及び一般管理費',
         reportType: ReportType.PL,
         displayOrder: 620,
+        isDisplay: true,
         defaultTaxType: TaxType.TAXABLE_10,
     },
     {
@@ -459,6 +479,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '営業外費用',
         reportType: ReportType.PL,
         displayOrder: 621,
+        isDisplay: true,
         defaultTaxType: TaxType.NON_TAXABLE,
     },
     {
@@ -469,6 +490,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '販売費及び一般管理費',
         reportType: ReportType.PL,
         displayOrder: 622,
+        isDisplay: true,
         defaultTaxType: TaxType.TAXABLE_10,
     },
     {
@@ -479,6 +501,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '販売費及び一般管理費',
         reportType: ReportType.PL,
         displayOrder: 623,
+        isDisplay: true,
         defaultTaxType: TaxType.TAX_EXEMPT,
     },
     {
@@ -489,6 +512,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '販売費及び一般管理費',
         reportType: ReportType.PL,
         displayOrder: 624,
+        isDisplay: true,
         defaultTaxType: TaxType.NONE,
     },
     {
@@ -499,6 +523,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '販売費及び一般管理費',
         reportType: ReportType.PL,
         displayOrder: 625,
+        isDisplay: true,
         defaultTaxType: TaxType.NON_TAXABLE,
     },
     {
