@@ -2,13 +2,14 @@ import 'server-only';
 
 import type { AccountCategory } from '@prisma/client';
 import { prisma } from '@/lib/db';
-import type { AccountOption } from '@/lib/types';
+import type { AccountOption } from '@/lib/types/types';
 
 /**
  * Get all accounts ordered by category and display order
  */
 export async function getAccounts() {
     return await prisma.account.findMany({
+        where: { isDisplay: true },
         orderBy: [{ category: 'asc' }, { displayOrder: 'asc' }],
     });
 }

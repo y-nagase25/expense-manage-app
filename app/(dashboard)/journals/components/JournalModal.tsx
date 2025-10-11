@@ -27,7 +27,7 @@ import {
     PaymentAccountLabel,
     TaxTypeLabel,
     TransactionTypeLabel,
-} from '@/lib/types';
+} from '@/lib/types/types';
 import { createJournalEntry } from '../actions';
 
 const JournalModal = () => {
@@ -41,7 +41,7 @@ const JournalModal = () => {
     };
 
     // Manage form state with a server action
-    const [state, formAction] = useActionState(createJournalEntry, initialState);
+    const [state, formAction, isPending] = useActionState(createJournalEntry, initialState);
 
     const preserveFormData = useCallback(
         (errField: FormData) => {
@@ -259,7 +259,9 @@ const JournalModal = () => {
                         <Button type="button" variant="outline" onClick={closeModal}>
                             キャンセル
                         </Button>
-                        <Button type="submit">登録</Button>
+                        <Button type="submit" disabled={isPending}>
+                            {isPending ? '登録中...' : '登録'}
+                        </Button>
                     </DialogFooter>
                 </form>
             </DialogContent>

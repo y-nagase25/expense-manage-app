@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/table';
 import { JournalProvider } from '@/hooks/useJournal';
 import { getAccountOptions } from '@/lib/loaders/accounts';
-import { getJournals } from './actions';
+import { getJournals } from '@/lib/loaders/journals';
 import ActionIcons from './components/ActionIcons';
 import JournalModal from './components/JournalModal';
 import RegisterButton from './components/ResiterButton';
@@ -76,11 +76,11 @@ export default async function JournalPage() {
                                     journals.map((j) => (
                                         <TableRow key={j.id}>
                                             <TableCell>
-                                                <TransactionTypeTag journal={j} />
+                                                <TransactionTypeTag transactionType={j.type} />
                                             </TableCell>
                                             <TableCell>{formatDate(j.date)}</TableCell>
                                             <TableCell className="text-muted-foreground">
-                                                {j.account.name}
+                                                {j.accountId}
                                             </TableCell>
                                             <TableCell className="text-right text-muted-foreground">
                                                 {formatAmount(j.amount.toString())}
