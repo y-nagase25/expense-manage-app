@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState } from 'react';
-import type { AccountOption, JournalFormData } from '@/lib/types';
+import type { AccountOption, JournalFormData } from '@/lib/types/types';
 
 type JournalContextType = {
     isModalOpen: boolean;
