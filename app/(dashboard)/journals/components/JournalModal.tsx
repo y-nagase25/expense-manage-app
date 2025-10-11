@@ -1,6 +1,6 @@
 'use client';
 
-import type { AccountTitle, TaxCategory, TransactionType } from '@prisma/client';
+import type { PaymentAccount, TaxType, TransactionType } from '@prisma/client';
 import { useActionState, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -22,16 +22,16 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { useJournal } from '@/hooks/useJournal';
 import { useToast } from '@/hooks/useToast';
-import { createJournalEntry } from '@/lib/actions';
 import {
-    AccountTitleLabel,
     type FormResponse,
-    TaxCategoryLabel,
+    PaymentAccountLabel,
+    TaxTypeLabel,
     TransactionTypeLabel,
 } from '@/lib/types';
+import { createJournalEntry } from '../actions';
 
 const JournalModal = () => {
-    const { isModalOpen, closeModal, formData, setFormData } = useJournal();
+    const { isModalOpen, closeModal, formData, setFormData, accountOptions } = useJournal();
     const { showToast } = useToast();
 
     const initialState: FormResponse = {
@@ -39,28 +39,28 @@ const JournalModal = () => {
         message: '',
         field: undefined,
     };
-    // manage form state with a server action
+
+    // Manage form state with a server action
     const [state, formAction] = useActionState(createJournalEntry, initialState);
 
     const preserveFormData = useCallback(
         (errField: FormData) => {
             setFormData((prevFormData) => ({
-                transactionType:
-                    (errField.get('transactionType') as TransactionType) ||
-                    prevFormData.transactionType,
-                occurrenceDate:
-                    (errField.get('occurrenceDate') as string) || prevFormData.occurrenceDate,
-                debitAccount:
-                    (errField.get('debitAccount') as AccountTitle) || prevFormData.debitAccount,
-                debitAmount: Number(errField.get('debitAmount')) || prevFormData.debitAmount,
-                debitTax: (errField.get('debitTax') as TaxCategory) || prevFormData.debitTax,
-                creditAccount:
-                    (errField.get('creditAccount') as AccountTitle) || prevFormData.creditAccount,
-                client: (errField.get('client') as string) || prevFormData.client,
-                paymentDate: (errField.get('paymentDate') as string) || prevFormData.paymentDate,
+                ...prevFormData,
+                type: (errField.get('type') as TransactionType) || prevFormData.type || 'EXPENSE',
+                date: (errField.get('date') as string) || prevFormData.date,
+                accountId: (errField.get('accountId') as string) || prevFormData.accountId,
+                amount: (errField.get('amount') as string) || prevFormData.amount,
                 paymentAccount:
-                    (errField.get('paymentAccount') as string) || prevFormData.paymentAccount,
-                notes: (errField.get('notes') as string) || prevFormData.notes,
+                    (errField.get('paymentAccount') as PaymentAccount) ||
+                    prevFormData.paymentAccount ||
+                    'CASH',
+                taxType:
+                    (errField.get('taxType') as TaxType) || prevFormData.taxType || 'TAXABLE_10',
+                clientName: (errField.get('clientName') as string) || prevFormData.clientName,
+                description: (errField.get('description') as string) || prevFormData.description,
+                subAccount: (errField.get('subAccount') as string) || prevFormData.subAccount,
+                memo: (errField.get('memo') as string) || prevFormData.memo,
             }));
         },
         [setFormData]
@@ -73,11 +73,12 @@ const JournalModal = () => {
         if (state.message) {
             if (state.success) {
                 showToast('success', '処理成功', state.message);
+                closeModal(); // Close modal on success
             } else {
                 showToast('error', 'エラー', state.message);
             }
         }
-    }, [state, showToast, preserveFormData]);
+    }, [state, showToast, preserveFormData, closeModal]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -88,6 +89,17 @@ const JournalModal = () => {
     const handleSelectChange = (name: string, value: string) => {
         const newFormData = { ...formData, [name]: value };
         setFormData(newFormData);
+
+        // Auto-set tax type when account changes
+        if (name === 'accountId') {
+            const selectedAccount = accountOptions.find((opt) => opt.value === value);
+            if (selectedAccount) {
+                setFormData({
+                    ...newFormData,
+                    taxType: selectedAccount.defaultTaxType,
+                });
+            }
+        }
     };
 
     return (
@@ -99,15 +111,13 @@ const JournalModal = () => {
                 <form action={formAction}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                            <Label htmlFor="transactionType">収支区分</Label>
+                            <Label htmlFor="type">収支区分</Label>
                             <Select
-                                name="transactionType"
-                                value={formData.transactionType}
-                                onValueChange={(value) =>
-                                    handleSelectChange('transactionType', value)
-                                }
+                                name="type"
+                                value={formData.type}
+                                onValueChange={(value) => handleSelectChange('type', value)}
                             >
-                                <SelectTrigger id="transactionType">
+                                <SelectTrigger id="type">
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -121,133 +131,126 @@ const JournalModal = () => {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="occurrenceDate">発生日</Label>
+                            <Label htmlFor="date">日付</Label>
                             <Input
                                 type="date"
-                                id="occurrenceDate"
-                                name="occurrenceDate"
-                                value={formData.occurrenceDate}
+                                id="date"
+                                name="date"
+                                value={formData.date}
                                 onChange={handleChange}
                                 required
-                            />
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label htmlFor="debitAccount">借方科目</Label>
-                            <Select
-                                name="debitAccount"
-                                value={formData.debitAccount}
-                                onValueChange={(value) => handleSelectChange('debitAccount', value)}
-                            >
-                                <SelectTrigger id="debitAccount">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {Object.entries(AccountTitleLabel).map(([value, label]) => (
-                                        <SelectItem key={value} value={value}>
-                                            {label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label htmlFor="creditAccount">貸方科目</Label>
-                            <Select
-                                name="creditAccount"
-                                value={formData.creditAccount}
-                                onValueChange={(value) =>
-                                    handleSelectChange('creditAccount', value)
-                                }
-                            >
-                                <SelectTrigger id="creditAccount">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {Object.entries(AccountTitleLabel).map(([value, label]) => (
-                                        <SelectItem key={value} value={value}>
-                                            {label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label htmlFor="debitAmount">金額</Label>
-                            <Input
-                                type="number"
-                                id="debitAmount"
-                                name="debitAmount"
-                                value={formData.debitAmount}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label htmlFor="debitTax">税区分</Label>
-                            <Select
-                                name="debitTax"
-                                value={formData.debitTax}
-                                onValueChange={(value) => handleSelectChange('debitTax', value)}
-                            >
-                                <SelectTrigger id="debitTax">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {Object.entries(TaxCategoryLabel).map(([value, label]) => (
-                                        <SelectItem key={value} value={value}>
-                                            {label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label htmlFor="client">取引先</Label>
-                            <Input
-                                type="text"
-                                id="client"
-                                name="client"
-                                value={formData.client}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label htmlFor="paymentDate">決済日</Label>
-                            <Input
-                                type="date"
-                                id="paymentDate"
-                                name="paymentDate"
-                                value={formData.paymentDate}
-                                onChange={handleChange}
-                            />
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label htmlFor="paymentAccount">決済口座</Label>
-                            <Input
-                                type="text"
-                                id="paymentAccount"
-                                name="paymentAccount"
-                                value={formData.paymentAccount}
-                                onChange={handleChange}
                             />
                         </div>
 
                         <div className="space-y-2 md:col-span-2">
-                            <Label htmlFor="notes">備考</Label>
-                            <Textarea
-                                id="notes"
-                                name="notes"
-                                rows={3}
-                                value={formData.notes ?? ''}
+                            <Label htmlFor="accountId">勘定科目</Label>
+                            <Select
+                                name="accountId"
+                                value={formData.accountId}
+                                onValueChange={(value) => handleSelectChange('accountId', value)}
+                            >
+                                <SelectTrigger id="accountId">
+                                    <SelectValue placeholder="勘定科目を選択" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {accountOptions.map((option) => (
+                                        <SelectItem key={option.value} value={option.value}>
+                                            {option.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="amount">金額</Label>
+                            <Input
+                                type="number"
+                                id="amount"
+                                name="amount"
+                                value={formData.amount}
                                 onChange={handleChange}
+                                required
+                                min="0"
+                                step="1"
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="taxType">税区分</Label>
+                            <Select
+                                name="taxType"
+                                value={formData.taxType}
+                                onValueChange={(value) => handleSelectChange('taxType', value)}
+                            >
+                                <SelectTrigger id="taxType">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {Object.entries(TaxTypeLabel).map(([value, label]) => (
+                                        <SelectItem key={value} value={value}>
+                                            {label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="clientName">取引先</Label>
+                            <Input
+                                type="text"
+                                id="clientName"
+                                name="clientName"
+                                value={formData.clientName}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="paymentAccount">決済方法</Label>
+                            <Select
+                                name="paymentAccount"
+                                value={formData.paymentAccount}
+                                onValueChange={(value) =>
+                                    handleSelectChange('paymentAccount', value)
+                                }
+                            >
+                                <SelectTrigger id="paymentAccount">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {Object.entries(PaymentAccountLabel).map(([value, label]) => (
+                                        <SelectItem key={value} value={value}>
+                                            {label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <div className="space-y-2 md:col-span-2">
+                            <Label htmlFor="description">摘要</Label>
+                            <Input
+                                type="text"
+                                id="description"
+                                name="description"
+                                value={formData.description ?? ''}
+                                onChange={handleChange}
+                                placeholder="取引の説明（任意）"
+                            />
+                        </div>
+
+                        <div className="space-y-2 md:col-span-2">
+                            <Label htmlFor="memo">備考</Label>
+                            <Textarea
+                                id="memo"
+                                name="memo"
+                                rows={3}
+                                value={formData.memo ?? ''}
+                                onChange={handleChange}
+                                placeholder="詳細メモ（任意）"
                             />
                         </div>
                     </div>

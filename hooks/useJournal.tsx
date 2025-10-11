@@ -1,32 +1,40 @@
 'use client';
+
 import { createContext, useContext, useState } from 'react';
-import type { InitialJournalEntry } from '@/lib/types';
+import type { AccountOption, JournalFormData } from '@/lib/types';
 
 type JournalContextType = {
     isModalOpen: boolean;
     openModal: () => void;
     closeModal: () => void;
-    formData: InitialJournalEntry;
-    setFormData: React.Dispatch<React.SetStateAction<InitialJournalEntry>>;
+    formData: JournalFormData;
+    setFormData: React.Dispatch<React.SetStateAction<JournalFormData>>;
+    accountOptions: AccountOption[];
 };
 
 // Context Object
 const JournalContext = createContext<JournalContextType | null>(null);
 
 // Provider Component
-export const JournalProvider = ({ children }: { children: React.ReactNode }) => {
+export const JournalProvider = ({
+    children,
+    accountOptions,
+}: {
+    children: React.ReactNode;
+    accountOptions: AccountOption[];
+}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [formData, setFormData] = useState<InitialJournalEntry>({
-        transactionType: 'EXPENSE',
-        occurrenceDate: new Date().toISOString().split('T')[0],
-        debitAccount: 'COMMUNICATION',
-        debitAmount: 0,
-        debitTax: 'TAXABLE_10',
-        creditAccount: 'BANK_DEPOSIT',
-        client: '',
-        paymentDate: new Date().toISOString().split('T')[0],
-        paymentAccount: '',
-        notes: '',
+    const [formData, setFormData] = useState<JournalFormData>({
+        type: 'EXPENSE',
+        date: new Date().toISOString().split('T')[0],
+        accountId: accountOptions[0]?.value || '',
+        amount: '0',
+        paymentAccount: 'CASH',
+        taxType: 'TAXABLE_10',
+        clientName: '',
+        description: '',
+        subAccount: '',
+        memo: '',
     });
 
     const openModal = () => setIsModalOpen(true);
@@ -34,7 +42,14 @@ export const JournalProvider = ({ children }: { children: React.ReactNode }) => 
 
     return (
         <JournalContext.Provider
-            value={{ isModalOpen, openModal, closeModal, formData, setFormData }}
+            value={{
+                isModalOpen,
+                openModal,
+                closeModal,
+                formData,
+                setFormData,
+                accountOptions,
+            }}
         >
             {children}
         </JournalContext.Provider>

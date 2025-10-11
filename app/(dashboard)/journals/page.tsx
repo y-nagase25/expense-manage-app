@@ -7,8 +7,8 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { JournalProvider } from '@/hooks/useJournal';
-import { getJournalEntries } from '@/lib/actions';
-import { AccountTitleLabel } from '@/lib/types';
+import { getAccountOptions } from '@/lib/loaders/accounts';
+import { getJournals } from './actions';
 import ActionIcons from './components/ActionIcons';
 import JournalModal from './components/JournalModal';
 import RegisterButton from './components/ResiterButton';
@@ -16,11 +16,30 @@ import TransactionTypeTag from './components/TransactionTypeTag';
 
 export const dynamic = 'force-dynamic';
 
-const JournalPage = async () => {
-    const entries = await getJournalEntries();
+export default async function JournalPage() {
+    const [journals, accountOptions] = await Promise.all([getJournals(), getAccountOptions()]);
+
+    // Format amount with currency
+    const formatAmount = (amount: number | string) => {
+        const num = typeof amount === 'string' ? Number.parseFloat(amount) : amount;
+        return new Intl.NumberFormat('ja-JP', {
+            style: 'currency',
+            currency: 'JPY',
+        }).format(num);
+    };
+
+    // Format date to YYYY-MM-DD
+    const formatDate = (date: Date | string) => {
+        const d = typeof date === 'string' ? new Date(date) : date;
+        return d.toLocaleDateString('ja-JP', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+        });
+    };
 
     return (
-        <JournalProvider>
+        <JournalProvider accountOptions={accountOptions}>
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-2xl font-bold">仕訳帳</h1>
@@ -33,9 +52,9 @@ const JournalPage = async () => {
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>収支</TableHead>
-                                    <TableHead>発生日</TableHead>
-                                    <TableHead>借方勘定科目</TableHead>
-                                    <TableHead className="text-right">借方金額</TableHead>
+                                    <TableHead>日付</TableHead>
+                                    <TableHead>勘定科目</TableHead>
+                                    <TableHead className="text-right">金額</TableHead>
                                     <TableHead>取引先</TableHead>
                                     <TableHead>備考</TableHead>
                                     <TableHead className="w-[100px]">
@@ -44,7 +63,7 @@ const JournalPage = async () => {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {entries.length === 0 ? (
+                                {journals.length === 0 ? (
                                     <TableRow>
                                         <TableCell
                                             colSpan={7}
@@ -54,27 +73,27 @@ const JournalPage = async () => {
                                         </TableCell>
                                     </TableRow>
                                 ) : (
-                                    entries.map((entry) => (
-                                        <TableRow key={entry.id}>
+                                    journals.map((j) => (
+                                        <TableRow key={j.id}>
                                             <TableCell>
-                                                <TransactionTypeTag entry={entry} />
+                                                <TransactionTypeTag journal={j} />
                                             </TableCell>
-                                            <TableCell>{entry.occurrenceDate}</TableCell>
+                                            <TableCell>{formatDate(j.date)}</TableCell>
                                             <TableCell className="text-muted-foreground">
-                                                {AccountTitleLabel[entry.debitAccount]}
+                                                {j.account.name}
                                             </TableCell>
                                             <TableCell className="text-right text-muted-foreground">
-                                                {entry.debitAmount.toLocaleString()}
+                                                {formatAmount(j.amount.toString())}
                                             </TableCell>
                                             <TableCell className="text-muted-foreground max-w-xs truncate">
-                                                {entry.client}
+                                                {j.clientName}
                                             </TableCell>
                                             <TableCell className="text-muted-foreground max-w-xs truncate">
-                                                {entry.notes}
+                                                {j.memo || j.description}
                                             </TableCell>
                                             <TableCell>
                                                 <div className="flex items-center justify-end space-x-4">
-                                                    <ActionIcons entry={entry} />
+                                                    <ActionIcons id={j.id} />
                                                 </div>
                                             </TableCell>
                                         </TableRow>
@@ -87,6 +106,4 @@ const JournalPage = async () => {
             </div>
         </JournalProvider>
     );
-};
-
-export default JournalPage;
+}

@@ -1,29 +1,25 @@
 'use client';
 
-import type { JournalEntry } from '@prisma/client';
 import { EditIcon, TrashIcon } from 'lucide-react';
 import Link from 'next/link';
 import { startTransition } from 'react';
-import { deleteJournalEntry } from '@/lib/actions';
+import { deleteJournalEntry } from '../actions';
 
-const ActionIcons = ({ entry }: { entry: JournalEntry }) => {
+const ActionIcons = ({ id }: { id: string }) => {
     return (
         <>
-            <Link
-                href={`/journals/${entry.id}`}
-                className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-200"
-            >
+            <Link href={`/journals/${id}`} className="text-primary hover:text-primary/80">
                 <EditIcon className="w-5 h-5" />
             </Link>
             <button
                 onClick={() => {
                     if (!confirm('削除しますか？この操作は取り消せません。')) return;
                     startTransition(async () => {
-                        await deleteJournalEntry(entry.id);
+                        await deleteJournalEntry(id);
                     });
                 }}
                 type="button"
-                className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-200"
+                className="text-destructive hover:text-destructive/80"
             >
                 <TrashIcon className="w-5 h-5" />
             </button>

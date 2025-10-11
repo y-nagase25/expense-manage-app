@@ -1,11 +1,11 @@
-import type { JournalEntry } from '@prisma/client';
+import type { Journal } from '@prisma/client';
 import { Badge } from '@/components/ui/badge';
 import { TransactionTypeLabel } from '@/lib/types';
 
-const TransactionTypeTag = ({ entry }: { entry: JournalEntry }) => {
+const TransactionTypeTag = ({ journal }: { journal: Journal }) => {
     return (
-        <Badge variant={entry.transactionType === 'INCOME' ? 'success' : 'destructive'}>
-            {TransactionTypeLabel[entry.transactionType]}
+        <Badge variant={journal.type === 'INCOME' ? 'success' : 'destructive'}>
+            {TransactionTypeLabel[journal.type]}
         </Badge>
     );
 };

@@ -1,7 +1,4 @@
-import { type AccountTitle, type JournalEntry, TaxCategory, TransactionType } from '@prisma/client';
-
-// Re-export so the rest of the app can import from your local module if preferred.
-// export type { TransactionType, AccountTitle, TaxCategory };
+import type { Journal, PaymentAccount, TaxType, TransactionType } from '@prisma/client';
 
 // Label maps for UI (runtime-safe, keyed by Prisma enum values)
 export const TransactionTypeLabel: Record<TransactionType, string> = {
@@ -9,35 +6,59 @@ export const TransactionTypeLabel: Record<TransactionType, string> = {
     EXPENSE: '支出',
 };
 
-export const AccountTitleLabel: Record<AccountTitle, string> = {
-    SALES: '売上',
-    COMMUNICATION: '通信費',
-    SUPPLIES: '消耗品費',
-    RENT: '地代家賃',
-    UTILITIES: '水道光熱費',
-    ADVERTISING: '広告宣伝費',
-    TRANSPORTION: '旅費交通費',
-    DATING: '交際費',
-    CASH: '現金',
-    BANK_DEPOSIT: '普通預金',
-    ACCOUNTS_RECEIVABLE: '売掛金',
+export const PaymentAccountLabel: Record<PaymentAccount, string> = {
+    BANKING: '銀行口座',
     CREDIT_CARD: 'クレジットカード',
-    OWNERS_DEBID: '事業主借',
-    OWNERS_CREDIT: '事業主貸',
+    CASH: '現金',
+    PRIVATE: 'プライベート資金',
 };
 
-export const TaxCategoryLabel: Record<TaxCategory, string> = {
+export const TaxTypeLabel: Record<TaxType, string> = {
     TAXABLE_10: '課税10%',
     TAXABLE_8: '課税8%',
+    TAX_FREE: '免税',
     NON_TAXABLE: '非課税',
-    TAX_EXEMPT: '免税',
+    TAX_EXEMPT: '不課税',
+    NONE: '対象外',
 };
 
-// Optional helpers for select options, etc.
-export const TransactionTypeOptions = Object.values(TransactionType) as TransactionType[];
-export const TaxCategoryOptions = Object.values(TaxCategory) as TaxCategory[];
+// Optional helpers for select options
+export const TransactionTypeOptions = Object.entries(TransactionTypeLabel).map(
+    ([value, label]) => ({
+        value: value as TransactionType,
+        label,
+    })
+);
 
-export type InitialJournalEntry = Omit<JournalEntry, 'id' | 'createdAt' | 'updatedAt'>;
+export const PaymentAccountOptions = Object.entries(PaymentAccountLabel).map(([value, label]) => ({
+    value: value as PaymentAccount,
+    label,
+}));
+
+export const TaxTypeOptions = Object.entries(TaxTypeLabel).map(([value, label]) => ({
+    value: value as TaxType,
+    label,
+}));
+
+// Type for creating/updating journal entries (omit auto-generated fields)
+export type InitialJournal = Omit<
+    Journal,
+    'id' | 'createdAt' | 'updatedAt' | 'fiscalYear' | 'fiscalPeriod' | 'userId'
+>;
+
+// Type for journal form data (simplified for UI)
+export type JournalFormData = {
+    type: TransactionType;
+    date: string;
+    accountId: string;
+    amount: string; // String for form input
+    paymentAccount: PaymentAccount;
+    taxType: TaxType;
+    clientName: string;
+    description?: string;
+    subAccount?: string;
+    memo?: string;
+};
 
 export type AccountType = 'DEBIT' | 'CREDIT';
 
@@ -53,6 +74,17 @@ export type BaseResponse = {
     success: boolean;
     message: string;
 };
+
 export type FormResponse = BaseResponse & {
     field?: FormData;
+};
+
+// Account selection helper type
+export type AccountOption = {
+    value: string; // Account ID
+    label: string; // Display format: "101 現金"
+    code: string;
+    name: string;
+    category: string;
+    defaultTaxType: TaxType;
 };
