@@ -9,6 +9,7 @@ import {
 import { JournalProvider } from '@/hooks/useJournal';
 import { getAccountOptions } from '@/lib/loaders/accounts';
 import { getJournals } from '@/lib/loaders/journals';
+import { cn } from '@/lib/utils';
 import ActionIcons from './components/ActionIcons';
 import JournalModal from './components/JournalModal';
 import RegisterButton from './components/ResiterButton';
@@ -80,9 +81,16 @@ export default async function JournalPage() {
                                             </TableCell>
                                             <TableCell>{formatDate(j.date)}</TableCell>
                                             <TableCell className="text-muted-foreground">
-                                                {j.accountId}
+                                                {j.account.name}
                                             </TableCell>
-                                            <TableCell className="text-right text-muted-foreground">
+                                            <TableCell
+                                                className={cn(
+                                                    'text-right font-medium',
+                                                    j.type === 'INCOME'
+                                                        ? 'text-emerald-600'
+                                                        : 'text-destructive'
+                                                )}
+                                            >
                                                 {formatAmount(j.amount.toString())}
                                             </TableCell>
                                             <TableCell className="text-muted-foreground max-w-xs truncate">

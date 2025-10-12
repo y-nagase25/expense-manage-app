@@ -12,6 +12,7 @@ import {
 import { formatCurrency, formatToJST } from '@/lib/format';
 import type { SerializedJournal } from '@/lib/types/journals';
 import { PaymentAccountLabel, TaxTypeLabel } from '@/lib/types/types';
+import { cn } from '@/lib/utils';
 import TransactionTypeTag from './TransactionTypeTag';
 
 type Props = SerializedJournal & { account: Account };
@@ -87,7 +88,12 @@ export function JournalPreview({ journal }: { journal: Props }) {
                                 </div>
                             </div>
                         </TableCell>
-                        <TableCell className="text-right font-mono">
+                        <TableCell
+                            className={cn(
+                                'text-right font-mono font-medium',
+                                journal.type === 'INCOME' ? 'text-emerald-600' : 'text-destructive'
+                            )}
+                        >
                             {formatCurrency(Number(journal.amount))}
                         </TableCell>
                     </TableRow>
