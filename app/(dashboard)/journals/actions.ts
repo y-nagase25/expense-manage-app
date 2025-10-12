@@ -3,26 +3,10 @@
 import { Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { ZodError } from 'zod';
+import { getCurrentUserId } from '@/lib/auth';
 import { prisma } from '@/lib/db';
 import type { FormResponse } from '@/lib/types/types';
 import { journalEntrySchema, journalEntryUpdateSchema } from '@/lib/validations/journal';
-import { createServerSupabase } from '@/utils/supabase/server';
-
-/**
- * Get current user ID from Supabase session
- */
-async function getCurrentUserId(): Promise<string> {
-    const supabase = await createServerSupabase();
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-        throw new Error('Unauthorized: User not logged in');
-    }
-
-    return user.id;
-}
 
 /**
  * Get single journal by ID with account relation
@@ -30,8 +14,11 @@ async function getCurrentUserId(): Promise<string> {
 export async function getJournalById(id: string) {
     const userId = await getCurrentUserId();
 
-    return await prisma.journal.findUnique({
-        where: { id, userId },
+    return await prisma.journal.findFirst({
+        where: {
+            id,
+            userId,
+        },
         include: {
             account: true,
         },
@@ -144,17 +131,17 @@ export async function updateJournalEntry(
         // Validate input data
         const validatedData = journalEntryUpdateSchema.parse(rawData);
 
-        // Simulate delay to test loading state
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-
         // Parse date and calculate fiscal year
         const date = new Date(validatedData.date);
 
         // Parse amount as Decimal
         const amount = new Prisma.Decimal(validatedData.amount);
 
-        await prisma.journal.update({
-            where: { id: validatedData.id, userId },
+        const result = await prisma.journal.updateMany({
+            where: {
+                id: validatedData.id,
+                userId,
+            },
             data: {
                 date: date,
                 accountId: validatedData.accountId,
@@ -168,6 +155,14 @@ export async function updateJournalEntry(
                 fiscalYear: date.getFullYear(),
             },
         });
+
+        if (result.count === 0) {
+            return {
+                success: false,
+                message: '仕訳が見つかりませんでした',
+                field: formData,
+            };
+        }
 
         revalidatePath(`/journals/${validatedData.id}`);
         return { success: true, message: '更新が完了しました' };
@@ -203,18 +198,20 @@ export async function deleteJournalEntry(id: string) {
     try {
         const userId = await getCurrentUserId();
 
-        await prisma.journal.delete({
-            where: { id, userId },
+        const result = await prisma.journal.deleteMany({
+            where: {
+                id,
+                userId,
+            },
         });
+
+        if (result.count === 0) {
+            console.warn(`Journal not found for id: ${id}`);
+        }
 
         revalidatePath('/journals');
     } catch (error: unknown) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-            // Record to delete not found
-            console.warn(`Journal not found for id: ${id}`);
-        } else {
-            console.error('Error deleting journal entry:', error);
-            throw error;
-        }
+        console.error('Error deleting journal entry:', error);
+        throw error;
     }
 }
