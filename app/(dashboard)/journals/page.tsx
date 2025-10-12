@@ -1,3 +1,4 @@
+import { PageBreadcrumb } from '@/components/PageBreadcrumb';
 import {
     Table,
     TableBody,
@@ -16,6 +17,10 @@ import RegisterButton from './components/ResiterButton';
 import TransactionTypeTag from './components/TransactionTypeTag';
 
 export const dynamic = 'force-dynamic';
+
+const pageContent = {
+    title: '仕訳一覧',
+} as const;
 
 export default async function JournalPage() {
     const [journals, accountOptions] = await Promise.all([getJournals(), getAccountOptions()]);
@@ -42,8 +47,11 @@ export default async function JournalPage() {
     return (
         <JournalProvider accountOptions={accountOptions}>
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                <PageBreadcrumb
+                    items={[{ label: 'ホーム', href: '/' }, { label: pageContent.title }]}
+                />
                 <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-2xl font-bold">仕訳帳</h1>
+                    <h1 className="text-2xl font-bold">{pageContent.title}</h1>
                     <RegisterButton />
                     <JournalModal />
                 </div>

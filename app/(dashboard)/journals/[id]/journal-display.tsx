@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
 import { useActionState, useEffect, useRef } from 'react';
+import { PageBreadcrumb } from '@/components/PageBreadcrumb';
 import { Button } from '@/components/ui/button';
 import { FormLabel } from '@/components/ui/form-label';
 import { Input } from '@/components/ui/input';
@@ -27,6 +27,12 @@ import { updateJournalEntry } from '../actions';
 import { JournalPreview } from '../components/journal-preview';
 import TransactionTypeTag from '../components/TransactionTypeTag';
 import { ValidationErrors } from '../components/ValidationErrors';
+
+const pageContent = {
+    title: '仕訳詳細',
+    prevTitle: '仕訳一覧',
+    prevLink: '/journals',
+} as const;
 
 type Props = {
     journal: SerializedJournal;
@@ -64,13 +70,14 @@ export function JournalDiplay({ journal, accountOptions }: Props) {
 
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
-            <Link
-                href="/journals"
-                className="inline-flex items-center text-primary hover:text-primary/80 mb-4"
-            >
-                <span className="mr-2">＜</span>戻る
-            </Link>
-            <h1 className="text-2xl font-semibold mb-6">仕訳詳細</h1>
+            <PageBreadcrumb
+                items={[
+                    { label: 'ホーム', href: '/' },
+                    { label: pageContent.prevTitle, href: pageContent.prevLink },
+                    { label: pageContent.title },
+                ]}
+            />
+            <h1 className="text-2xl font-semibold mb-6">{pageContent.title}</h1>
             <div className="text-sm text-muted-foreground my-2 text-right">
                 最終更新:{formatToJST(journal.updatedAt, false)}
             </div>
