@@ -1,3 +1,4 @@
+import { PageBreadcrumb } from '@/components/PageBreadcrumb';
 import {
     Table,
     TableBody,
@@ -9,12 +10,17 @@ import {
 import { JournalProvider } from '@/hooks/useJournal';
 import { getAccountOptions } from '@/lib/loaders/accounts';
 import { getJournals } from '@/lib/loaders/journals';
+import { cn } from '@/lib/utils';
 import ActionIcons from './components/ActionIcons';
 import JournalModal from './components/JournalModal';
 import RegisterButton from './components/ResiterButton';
 import TransactionTypeTag from './components/TransactionTypeTag';
 
 export const dynamic = 'force-dynamic';
+
+const pageContent = {
+    title: '仕訳一覧',
+} as const;
 
 export default async function JournalPage() {
     const [journals, accountOptions] = await Promise.all([getJournals(), getAccountOptions()]);
@@ -41,8 +47,11 @@ export default async function JournalPage() {
     return (
         <JournalProvider accountOptions={accountOptions}>
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                <PageBreadcrumb
+                    items={[{ label: 'ホーム', href: '/' }, { label: pageContent.title }]}
+                />
                 <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-2xl font-bold">仕訳帳</h1>
+                    <h1 className="text-2xl font-bold">{pageContent.title}</h1>
                     <RegisterButton />
                     <JournalModal />
                 </div>
@@ -80,9 +89,16 @@ export default async function JournalPage() {
                                             </TableCell>
                                             <TableCell>{formatDate(j.date)}</TableCell>
                                             <TableCell className="text-muted-foreground">
-                                                {j.accountId}
+                                                {j.account.name}
                                             </TableCell>
-                                            <TableCell className="text-right text-muted-foreground">
+                                            <TableCell
+                                                className={cn(
+                                                    'text-right font-medium',
+                                                    j.type === 'INCOME'
+                                                        ? 'text-success'
+                                                        : 'text-destructive'
+                                                )}
+                                            >
                                                 {formatAmount(j.amount.toString())}
                                             </TableCell>
                                             <TableCell className="text-muted-foreground max-w-xs truncate">

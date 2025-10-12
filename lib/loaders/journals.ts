@@ -1,13 +1,16 @@
 import 'server-only';
 
-import type { Journal } from '@prisma/client';
 import { cache } from 'react';
 import { prisma } from '@/lib/db';
 import { serialize } from '../serializer';
-import type { SerializedJournal } from '../types/journals';
+import type { JournalWithAccount, SerializedJournal } from '../types/journals';
 
-export const getJournals = cache(async (): Promise<Journal[]> => {
-    return await prisma.journal.findMany();
+export const getJournals = cache(async (): Promise<JournalWithAccount[]> => {
+    return await prisma.journal.findMany({
+        include: {
+            account: true,
+        },
+    });
 });
 
 export const getSerializedJournal = cache(async (id: string): Promise<SerializedJournal | null> => {

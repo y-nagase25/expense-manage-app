@@ -10,8 +10,8 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import { FormLabel } from '@/components/ui/form-label';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
     Select,
     SelectContent,
@@ -124,7 +124,13 @@ const JournalModal = () => {
                 <form action={formAction}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                            <Label htmlFor="type">収支区分</Label>
+                            <FormLabel
+                                htmlFor="type"
+                                required
+                                tooltip="収入または支出を選択してください"
+                            >
+                                収支区分
+                            </FormLabel>
                             <Select
                                 name="type"
                                 value={formData.type}
@@ -144,7 +150,13 @@ const JournalModal = () => {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="date">日付</Label>
+                            <FormLabel
+                                htmlFor="date"
+                                required
+                                tooltip="取引が発生した日付を入力してください"
+                            >
+                                日付
+                            </FormLabel>
                             <Input
                                 type="date"
                                 id="date"
@@ -156,7 +168,13 @@ const JournalModal = () => {
                         </div>
 
                         <div className="space-y-2 md:col-span-2">
-                            <Label htmlFor="accountId">勘定科目</Label>
+                            <FormLabel
+                                htmlFor="accountId"
+                                required
+                                tooltip="取引内容に応じた勘定科目を選択してください"
+                            >
+                                勘定科目
+                            </FormLabel>
                             <Select
                                 name="accountId"
                                 value={formData.accountId}
@@ -176,7 +194,13 @@ const JournalModal = () => {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="amount">金額</Label>
+                            <FormLabel
+                                htmlFor="amount"
+                                required
+                                tooltip="取引金額を入力してください（1〜8桁まで）"
+                            >
+                                金額
+                            </FormLabel>
                             <Input
                                 type="number"
                                 id="amount"
@@ -190,7 +214,13 @@ const JournalModal = () => {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="taxType">税区分</Label>
+                            <FormLabel
+                                htmlFor="taxType"
+                                required
+                                tooltip="消費税の課税区分を選択してください"
+                            >
+                                税区分
+                            </FormLabel>
                             <Select
                                 name="taxType"
                                 value={formData.taxType}
@@ -210,7 +240,13 @@ const JournalModal = () => {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="clientName">取引先</Label>
+                            <FormLabel
+                                htmlFor="clientName"
+                                required
+                                tooltip="取引先の名前を入力してください（最大30文字）"
+                            >
+                                取引先
+                            </FormLabel>
                             <Input
                                 type="text"
                                 id="clientName"
@@ -222,7 +258,13 @@ const JournalModal = () => {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="paymentAccount">決済方法</Label>
+                            <FormLabel
+                                htmlFor="paymentAccount"
+                                required
+                                tooltip="決済に使用した口座や方法を選択してください"
+                            >
+                                決済方法
+                            </FormLabel>
                             <Select
                                 name="paymentAccount"
                                 value={formData.paymentAccount}
@@ -244,7 +286,13 @@ const JournalModal = () => {
                         </div>
 
                         <div className="space-y-2 md:col-span-2">
-                            <Label htmlFor="description">摘要</Label>
+                            <FormLabel
+                                htmlFor="description"
+                                required={false}
+                                tooltip="取引の簡単な説明を入力してください（最大50文字、任意）"
+                            >
+                                摘要
+                            </FormLabel>
                             <Input
                                 type="text"
                                 id="description"
@@ -256,7 +304,9 @@ const JournalModal = () => {
                         </div>
 
                         <div className="space-y-2 md:col-span-2">
-                            <Label htmlFor="memo">備考</Label>
+                            <FormLabel htmlFor="memo" required={false}>
+                                備考
+                            </FormLabel>
                             <Textarea
                                 id="memo"
                                 name="memo"
