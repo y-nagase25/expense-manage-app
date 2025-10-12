@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useActionState, useEffect } from 'react';
+import { useActionState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -25,6 +25,7 @@ import {
 import { updateJournalEntry } from '../actions';
 import { JournalPreview } from '../components/journal-preview';
 import TransactionTypeTag from '../components/TransactionTypeTag';
+import { ValidationErrors } from '../components/ValidationErrors';
 
 type Props = {
     journal: SerializedJournal;
@@ -38,18 +39,26 @@ export function JournalDiplay({ journal, accountOptions }: Props) {
         success: false,
         message: '',
         field: undefined,
+        errors: {},
     };
 
     const [state, formAction, isPending] = useActionState(updateJournalEntry, initialState);
 
+    // Track previous state to prevent infinite loop
+    const prevStateRef = useRef<FormResponse>(initialState);
+
     useEffect(() => {
-        if (state.message) {
-            if (state.success) {
-                showToast('success', '処理成功', state.message);
-            } else {
-                showToast('error', 'エラー', state.message);
-            }
+        // Only process if state has actually changed (prevent infinite loop)
+        if (state === prevStateRef.current) {
+            return;
         }
+
+        if (state.message && state.success) {
+            showToast('success', '処理成功', state.message);
+        }
+
+        // Update ref to current state
+        prevStateRef.current = state;
     }, [state, showToast]);
 
     return (
@@ -65,8 +74,12 @@ export function JournalDiplay({ journal, accountOptions }: Props) {
                 最終更新:{formatToJST(journal.updatedAt, false)}
             </div>
 
+            {/* Validation errors display */}
+            <ValidationErrors errors={state.errors} className="mb-6" />
+
             <form action={formAction}>
                 <input type="hidden" name="id" value={journal.id} />
+                <input type="hidden" name="type" value={journal.type} />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
                         <Label>収支区分</Label>

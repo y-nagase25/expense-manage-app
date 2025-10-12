@@ -77,6 +77,7 @@ export type BaseResponse = {
 
 export type FormResponse = BaseResponse & {
     field?: FormData;
+    errors?: Record<string, string[]>;
 };
 
 // Account selection helper type

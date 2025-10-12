@@ -1,6 +1,14 @@
+'use client';
+
 import type { Account } from '@prisma/client';
-import { Table } from 'lucide-react';
-import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
 import { formatCurrency, formatToJST } from '@/lib/format';
 import type { SerializedJournal } from '@/lib/types/journals';
 import { PaymentAccountLabel, TaxTypeLabel } from '@/lib/types/types';
