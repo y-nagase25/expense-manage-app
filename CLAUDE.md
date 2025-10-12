@@ -49,6 +49,7 @@ Example: `docs/202510221105_user_authentication_system_design.md`
 | Muted background | `bg-muted` | `bg-gray-50`, `bg-gray-100` |
 | Accent | `bg-accent`, `text-accent-foreground` | `bg-gray-100` |
 | Destructive | `bg-destructive`, `text-destructive-foreground` | `bg-red-500`, `text-red-600` |
+| Success/Income | `bg-success`, `text-success` | `bg-green-500`, `text-emerald-600`, `text-green-600` |
 | Ring (focus) | `ring-ring` | `ring-indigo-500`, `ring-blue-500` |
 
 ### Component Patterns

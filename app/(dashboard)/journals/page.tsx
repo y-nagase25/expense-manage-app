@@ -87,7 +87,7 @@ export default async function JournalPage() {
                                                 className={cn(
                                                     'text-right font-medium',
                                                     j.type === 'INCOME'
-                                                        ? 'text-emerald-600'
+                                                        ? 'text-success'
                                                         : 'text-destructive'
                                                 )}
                                             >

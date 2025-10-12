@@ -91,7 +91,7 @@ export function JournalPreview({ journal }: { journal: Props }) {
                         <TableCell
                             className={cn(
                                 'text-right font-mono font-medium',
-                                journal.type === 'INCOME' ? 'text-emerald-600' : 'text-destructive'
+                                journal.type === 'INCOME' ? 'text-success' : 'text-destructive'
                             )}
                         >
                             {formatCurrency(Number(journal.amount))}
