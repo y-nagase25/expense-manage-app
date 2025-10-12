@@ -1,7 +1,7 @@
 'use client';
 
 import type { PaymentAccount, TaxType, TransactionType } from '@prisma/client';
-import { useActionState, useCallback, useEffect } from 'react';
+import { useActionState, useCallback, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -29,6 +29,7 @@ import {
     TransactionTypeLabel,
 } from '@/lib/types/types';
 import { createJournalEntry } from '../actions';
+import { ValidationErrors } from './ValidationErrors';
 
 const JournalModal = () => {
     const { isModalOpen, closeModal, formData, setFormData, accountOptions } = useJournal();
@@ -38,10 +39,14 @@ const JournalModal = () => {
         success: false,
         message: '',
         field: undefined,
+        errors: {},
     };
 
     // Manage form state with a server action
     const [state, formAction, isPending] = useActionState(createJournalEntry, initialState);
+
+    // Track previous state to prevent infinite loop
+    const prevStateRef = useRef<FormResponse>(initialState);
 
     const preserveFormData = useCallback(
         (errField: FormData) => {
@@ -68,16 +73,20 @@ const JournalModal = () => {
 
     // useEffect to show a toast when the form state changes after submission
     useEffect(() => {
+        // Only process if state has actually changed (prevent infinite loop)
+        if (state === prevStateRef.current) {
+            return;
+        }
+
         if (state.field) preserveFormData(state.field);
 
-        if (state.message) {
-            if (state.success) {
-                showToast('success', '処理成功', state.message);
-                closeModal(); // Close modal on success
-            } else {
-                showToast('error', 'エラー', state.message);
-            }
+        if (state.message && state.success) {
+            showToast('success', '処理成功', state.message);
+            closeModal(); // Close modal on success
         }
+
+        // Update ref to current state
+        prevStateRef.current = state;
     }, [state, showToast, preserveFormData, closeModal]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -108,6 +117,10 @@ const JournalModal = () => {
                 <DialogHeader>
                     <DialogTitle>仕訳を登録</DialogTitle>
                 </DialogHeader>
+
+                {/* Validation errors display */}
+                <ValidationErrors errors={state.errors} className="mb-4" />
+
                 <form action={formAction}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
