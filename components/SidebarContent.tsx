@@ -17,6 +17,11 @@ const menuItems = [
         href: '/journals',
     },
     {
+        title: '総勘定元帳',
+        icon: FileText,
+        href: '/ledgers',
+    },
+    {
         title: 'アカウント',
         icon: User,
         href: '/profile',
