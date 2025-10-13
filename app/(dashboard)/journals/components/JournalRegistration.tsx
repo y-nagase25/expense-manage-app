@@ -1,14 +1,17 @@
 'use client';
 
 import type { PaymentAccount, TaxType, TransactionType } from '@prisma/client';
-import { useActionState, useCallback, useEffect, useMemo, useRef } from 'react';
+import { useActionState, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
+    DialogClose,
     DialogContent,
+    DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
+    DialogTrigger,
 } from '@/components/ui/dialog';
 import { FormLabel } from '@/components/ui/form-label';
 import { Input } from '@/components/ui/input';
@@ -22,10 +25,11 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { useJournal } from '@/hooks/useJournal';
 import { useToast } from '@/hooks/useToast';
 import {
+    type AccountOption,
     type FormResponse,
+    type JournalFormData,
     PaymentAccountLabel,
     TaxTypeLabel,
     TransactionTypeLabel,
@@ -33,8 +37,25 @@ import {
 import { createJournalEntry } from '../actions';
 import { ValidationErrors } from './ValidationErrors';
 
-const JournalModal = () => {
-    const { isModalOpen, closeModal, formData, setFormData, accountOptions } = useJournal();
+type JournalRegistrationProps = {
+    accountOptions: AccountOption[];
+};
+
+const JournalRegistration = ({ accountOptions }: JournalRegistrationProps) => {
+    // const [isModalOpen, setIsModalOpen] = useState(false);
+    const [formData, setFormData] = useState<JournalFormData>({
+        type: 'EXPENSE',
+        date: new Date().toISOString().split('T')[0],
+        accountId: accountOptions[0]?.value || '',
+        amount: '0',
+        paymentAccount: 'CASH',
+        taxType: 'TAXABLE_10',
+        clientName: '',
+        description: '',
+        subAccount: '',
+        memo: '',
+    });
+
     const { showToast } = useToast();
 
     const initialState: FormResponse = {
@@ -50,28 +71,24 @@ const JournalModal = () => {
     // Track previous state to prevent infinite loop
     const prevStateRef = useRef<FormResponse>(initialState);
 
-    const preserveFormData = useCallback(
-        (errField: FormData) => {
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                type: (errField.get('type') as TransactionType) || prevFormData.type || 'EXPENSE',
-                date: (errField.get('date') as string) || prevFormData.date,
-                accountId: (errField.get('accountId') as string) || prevFormData.accountId,
-                amount: (errField.get('amount') as string) || prevFormData.amount,
-                paymentAccount:
-                    (errField.get('paymentAccount') as PaymentAccount) ||
-                    prevFormData.paymentAccount ||
-                    'CASH',
-                taxType:
-                    (errField.get('taxType') as TaxType) || prevFormData.taxType || 'TAXABLE_10',
-                clientName: (errField.get('clientName') as string) || prevFormData.clientName,
-                description: (errField.get('description') as string) || prevFormData.description,
-                subAccount: (errField.get('subAccount') as string) || prevFormData.subAccount,
-                memo: (errField.get('memo') as string) || prevFormData.memo,
-            }));
-        },
-        [setFormData]
-    );
+    const preserveFormData = useCallback((errField: FormData) => {
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            type: (errField.get('type') as TransactionType) || prevFormData.type || 'EXPENSE',
+            date: (errField.get('date') as string) || prevFormData.date,
+            accountId: (errField.get('accountId') as string) || prevFormData.accountId,
+            amount: (errField.get('amount') as string) || prevFormData.amount,
+            paymentAccount:
+                (errField.get('paymentAccount') as PaymentAccount) ||
+                prevFormData.paymentAccount ||
+                'CASH',
+            taxType: (errField.get('taxType') as TaxType) || prevFormData.taxType || 'TAXABLE_10',
+            clientName: (errField.get('clientName') as string) || prevFormData.clientName,
+            description: (errField.get('description') as string) || prevFormData.description,
+            subAccount: (errField.get('subAccount') as string) || prevFormData.subAccount,
+            memo: (errField.get('memo') as string) || prevFormData.memo,
+        }));
+    }, []);
 
     // Filter account options based on transaction type
     const filteredAccountOptions = useMemo(() => {
@@ -100,7 +117,7 @@ const JournalModal = () => {
                 setFormData((prev) => ({ ...prev, accountId: '' }));
             }
         }
-    }, [formData.accountId, filteredAccountOptions, setFormData]);
+    }, [formData.accountId, filteredAccountOptions]);
 
     // useEffect to show a toast when the form state changes after submission
     useEffect(() => {
@@ -113,12 +130,12 @@ const JournalModal = () => {
 
         if (state.message && state.success) {
             showToast('success', '処理成功', state.message);
-            closeModal(); // Close modal on success
+            // setIsModalOpen(false); // Close modal on success
         }
 
         // Update ref to current state
         prevStateRef.current = state;
-    }, [state, showToast, preserveFormData, closeModal]);
+    }, [state, showToast, preserveFormData]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -143,16 +160,22 @@ const JournalModal = () => {
     };
 
     return (
-        <Dialog open={isModalOpen} onOpenChange={closeModal}>
+        <Dialog>
+            <DialogTrigger asChild>
+                <Button variant="outline">登録</Button>
+            </DialogTrigger>
             <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader>
-                    <DialogTitle>仕訳を登録</DialogTitle>
-                </DialogHeader>
-
-                {/* Validation errors display */}
                 <ValidationErrors errors={state.errors} className="mb-4" />
-
                 <form action={formAction}>
+                    <DialogHeader>
+                        <DialogTitle>仕訳を登録</DialogTitle>
+                        <DialogDescription className="mt-2 mb-4">
+                            毎日の取引を登録しましょう。
+                            <br />
+                            登録した仕訳はいつでも編集することができます。
+                        </DialogDescription>
+                    </DialogHeader>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
                             <FormLabel required tooltip="収入または支出を選択してください">
@@ -349,9 +372,9 @@ const JournalModal = () => {
                     </div>
 
                     <DialogFooter className="mt-6">
-                        <Button type="button" variant="outline" onClick={closeModal}>
-                            キャンセル
-                        </Button>
+                        <DialogClose asChild>
+                            <Button variant="outline">キャンセル</Button>
+                        </DialogClose>
                         <Button type="submit" disabled={isPending}>
                             {isPending ? '登録中...' : '登録'}
                         </Button>
@@ -362,4 +385,4 @@ const JournalModal = () => {
     );
 };
 
-export default JournalModal;
+export default JournalRegistration;
