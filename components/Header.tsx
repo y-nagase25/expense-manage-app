@@ -2,6 +2,7 @@
 
 import type { User } from '@supabase/supabase-js';
 import { Menu } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -15,6 +16,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { APP_NAME } from '@/utils/constants';
 import { createBrowserSupabase } from '@/utils/supabase/client';
 
 interface HeaderProps {
@@ -56,9 +58,16 @@ export function Header({ onMenuClick }: HeaderProps) {
                 </Button>
 
                 <div className="flex flex-1 items-center justify-between">
-                    <h1 className="text-lg font-semibold md:text-xl">
-                        <Link href="/">Cane.app</Link>
-                    </h1>
+                    <Link href="/" className="flex items-center gap-2">
+                        <Image
+                            src="/jouny_logo.png"
+                            alt="Jouny Logo"
+                            width={32}
+                            height={32}
+                            className="rounded"
+                        />
+                        <h1 className="text-lg font-semibold md:text-xl">{APP_NAME}</h1>
+                    </Link>
 
                     {user && (
                         <DropdownMenu>
