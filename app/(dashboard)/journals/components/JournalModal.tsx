@@ -1,7 +1,7 @@
 'use client';
 
 import type { PaymentAccount, TaxType, TransactionType } from '@prisma/client';
-import { useActionState, useCallback, useEffect, useRef } from 'react';
+import { useActionState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -12,6 +12,8 @@ import {
 } from '@/components/ui/dialog';
 import { FormLabel } from '@/components/ui/form-label';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import {
     Select,
     SelectContent,
@@ -71,6 +73,35 @@ const JournalModal = () => {
         [setFormData]
     );
 
+    // Filter account options based on transaction type
+    const filteredAccountOptions = useMemo(() => {
+        return accountOptions.filter((account) => {
+            if (formData.type === 'INCOME') {
+                // For INCOME transactions, show REVENUE and ASSET categories
+                return account.category === 'REVENUE' || account.category === 'ASSET';
+            }
+            // For EXPENSE transactions, show EXPENSE, LIABILITY, and EQUITY categories
+            return (
+                account.category === 'EXPENSE' ||
+                account.category === 'LIABILITY' ||
+                account.category === 'EQUITY'
+            );
+        });
+    }, [accountOptions, formData.type]);
+
+    // Reset accountId if current selection is not valid for the selected transaction type
+    useEffect(() => {
+        if (formData.accountId) {
+            const isValidAccount = filteredAccountOptions.some(
+                (account) => account.value === formData.accountId
+            );
+
+            if (!isValidAccount) {
+                setFormData((prev) => ({ ...prev, accountId: '' }));
+            }
+        }
+    }, [formData.accountId, filteredAccountOptions, setFormData]);
+
     // useEffect to show a toast when the form state changes after submission
     useEffect(() => {
         // Only process if state has actually changed (prevent infinite loop)
@@ -124,29 +155,28 @@ const JournalModal = () => {
                 <form action={formAction}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                            <FormLabel
-                                htmlFor="type"
-                                required
-                                tooltip="収入または支出を選択してください"
-                            >
+                            <FormLabel required tooltip="収入または支出を選択してください">
                                 収支区分
                             </FormLabel>
-                            <Select
-                                name="type"
+                            <RadioGroup
                                 value={formData.type}
                                 onValueChange={(value) => handleSelectChange('type', value)}
+                                className="flex gap-4"
                             >
-                                <SelectTrigger id="type">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {Object.entries(TransactionTypeLabel).map(([value, label]) => (
-                                        <SelectItem key={value} value={value}>
+                                {/* Hidden input for form submission */}
+                                <input type="hidden" name="type" value={formData.type} />
+                                {Object.entries(TransactionTypeLabel).map(([value, label]) => (
+                                    <div key={value} className="flex items-center space-x-2">
+                                        <RadioGroupItem value={value} id={`type-${value}`} />
+                                        <Label
+                                            htmlFor={`type-${value}`}
+                                            className="font-normal cursor-pointer"
+                                        >
                                             {label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                                        </Label>
+                                    </div>
+                                ))}
+                            </RadioGroup>
                         </div>
 
                         <div className="space-y-2">
@@ -184,7 +214,7 @@ const JournalModal = () => {
                                     <SelectValue placeholder="勘定科目を選択" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {accountOptions.map((option) => (
+                                    {filteredAccountOptions.map((option) => (
                                         <SelectItem key={option.value} value={option.value}>
                                             {option.label}
                                         </SelectItem>
@@ -261,9 +291,9 @@ const JournalModal = () => {
                             <FormLabel
                                 htmlFor="paymentAccount"
                                 required
-                                tooltip="決済に使用した口座や方法を選択してください"
+                                tooltip="入出金があった口座（銀行口座や現金）を選択してください。「プライベート資金」は、個人の財布や銀行口座から、事業用として資金を入出金した場合に選びます。"
                             >
-                                決済方法
+                                口座
                             </FormLabel>
                             <Select
                                 name="paymentAccount"

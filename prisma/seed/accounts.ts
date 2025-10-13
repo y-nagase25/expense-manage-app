@@ -27,6 +27,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '流動資産',
         reportType: ReportType.BS,
         displayOrder: 1,
+        isDisplay: true,
         defaultTaxType: TaxType.NONE,
     },
     {
@@ -37,6 +38,7 @@ const accountMasterData: Prisma.AccountCreateInput[] = [
         subCategory: '流動資産',
         reportType: ReportType.BS,
         displayOrder: 2,
+        isDisplay: true,
         defaultTaxType: TaxType.NONE,
     },
     {

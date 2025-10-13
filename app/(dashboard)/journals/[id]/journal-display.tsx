@@ -197,9 +197,9 @@ export function JournalDiplay({ journal, accountOptions }: Props) {
                         <FormLabel
                             htmlFor="paymentAccount"
                             required
-                            tooltip="決済に使用した口座や方法を選択してください"
+                            tooltip="入出金があった口座（銀行口座や現金）を選択してください。「プライベート資金」は、個人の財布や銀行口座から、事業用として資金を入出金した場合に選びます。"
                         >
-                            決済方法
+                            口座
                         </FormLabel>
                         <Select name="paymentAccount" defaultValue={journal.paymentAccount}>
                             <SelectTrigger id="paymentAccount">
