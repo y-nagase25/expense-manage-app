@@ -48,7 +48,7 @@ export async function updateSession(request: NextRequest) {
     // Check if user is authenticated
     if (
         !user &&
-        !request.nextUrl.pathname.startsWith('/') &&
+        !(request.nextUrl.pathname === '/') &&
         !request.nextUrl.pathname.startsWith('/login') &&
         !request.nextUrl.pathname.startsWith('/auth') &&
         !request.nextUrl.pathname.startsWith('/error')
@@ -71,14 +71,14 @@ export async function updateSession(request: NextRequest) {
         // Only check terms acceptance for protected paths
         if (!isPublicPath) {
             // Query profile to check terms acceptance
-            const { data: profile } = await supabase
+            const { data: profile, error } = await supabase
                 .from('profiles')
                 .select('terms_accepted_at')
                 .eq('id', user.id)
                 .single();
 
-            // If terms not accepted, redirect to confirmation page
-            if (!profile?.terms_accepted_at) {
+            // If profile doesn't exist, has error, or terms not accepted, redirect to confirmation page
+            if (!profile || error || !profile?.terms_accepted_at) {
                 const url = request.nextUrl.clone();
                 url.pathname = '/confirm';
                 return NextResponse.redirect(url);
