@@ -12,10 +12,12 @@ datasource db {
 }
 
 model Profile {
-    id        String   @id @db.Uuid
-    email     String?
-    createdAt DateTime @default(now()) @map("created_at")
-    updatedAt DateTime @updatedAt @map("updated_at")
+    id              String    @id @db.Uuid
+    email           String?
+    businessName    String?
+    termsAcceptedAt DateTime? @map("terms_accepted_at")
+    createdAt       DateTime  @default(now()) @map("created_at")
+    updatedAt       DateTime  @updatedAt @map("updated_at")
 
     @@map("profiles")
 }
