@@ -39,7 +39,7 @@ export default async function LedgersPage() {
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <PageBreadcrumb
-                items={[{ label: 'ホーム', href: '/' }, { label: pageContent.title }]}
+                items={[{ label: 'ホーム', href: '/home' }, { label: pageContent.title }]}
             />
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">{pageContent.title}</h1>

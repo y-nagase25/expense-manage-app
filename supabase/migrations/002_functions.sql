@@ -7,8 +7,8 @@ LANGUAGE plpgsql
 SECURITY DEFINER SET search_path = public
 AS $$
 BEGIN
-  INSERT INTO public.profiles (id, email)
-  VALUES (new.id, new.raw_user_meta_data->>'email');
+  INSERT INTO public.profiles (id, email, created_at, updated_at)
+  VALUES (new.id, new.raw_user_meta_data->>'email', NOW(), NOW());
   RETURN new;
 END;
 $$;
