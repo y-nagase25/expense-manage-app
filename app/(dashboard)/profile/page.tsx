@@ -10,7 +10,7 @@ import { createServerSupabase } from '@/utils/supabase/server';
 import { DeleteUserButton } from './components/DeleteUserButton';
 
 const pageContent = {
-    title: 'プロフィール',
+    title: 'アカウント',
 } as const;
 
 export default async function ProfilePage() {

@@ -43,14 +43,16 @@ export function DeleteUserButton() {
         <Dialog>
             <DialogTrigger asChild>
                 <Button variant="destructive" size="sm">
-                    ユーザ削除
+                    アカウント削除
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle>ユーザ削除</DialogTitle>
+                    <DialogTitle>アカウント削除</DialogTitle>
                     <DialogDescription>
-                        ユーザを削除します。この操作は取り消すことができません。
+                        全てのデータが削除されます。
+                        <br />
+                        この操作は取り消すことができません。
                     </DialogDescription>
                 </DialogHeader>
                 <form action={formAction}>
