@@ -60,7 +60,6 @@ export default function ConfirmPage() {
                                     placeholder="田中事務所"
                                     defaultValue={state.field?.get('businessName')?.toString()}
                                     disabled={isPending}
-                                    required
                                 />
                                 <FieldError>{state.errors?.businessName}</FieldError>
                             </Field>

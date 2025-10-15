@@ -7,7 +7,7 @@ export const termsAcceptanceSchema = z.object({
     businessName: z
         .string()
         .min(1, '事業所名・屋号を入力してください')
-        .max(100, '事業所名・屋号は100文字以内で入力してください'),
+        .max(30, '事業所名・屋号は30文字以内で入力してください'),
     termsAccepted: z.boolean().refine((val) => val === true, {
         message: '利用規約・プライバシーポリシーへの同意が必要です',
     }),
