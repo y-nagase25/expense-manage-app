@@ -1,7 +1,6 @@
 'use client';
 
-import type { PaymentAccount, TaxType, TransactionType } from '@prisma/client';
-import { useActionState, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useActionState, useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -29,7 +28,6 @@ import { useToast } from '@/hooks/useToast';
 import {
     type AccountOption,
     type FormResponse,
-    type JournalFormData,
     PaymentAccountLabel,
     TaxTypeLabel,
     TransactionTypeLabel,
@@ -42,21 +40,10 @@ type JournalRegistrationProps = {
 };
 
 const JournalRegistration = ({ accountOptions }: JournalRegistrationProps) => {
-    // const [isModalOpen, setIsModalOpen] = useState(false);
-    const [formData, setFormData] = useState<JournalFormData>({
-        type: 'EXPENSE',
-        date: new Date().toISOString().split('T')[0],
-        accountId: accountOptions[0]?.value || '',
-        amount: '0',
-        paymentAccount: 'CASH',
-        taxType: 'TAXABLE_10',
-        clientName: '',
-        description: '',
-        subAccount: '',
-        memo: '',
-    });
-
     const { showToast } = useToast();
+    const [isOpen, setIsOpen] = useState(false);
+    const [formKey, setFormKey] = useState(0);
+    const errorCountRef = useRef(0);
 
     const initialState: FormResponse = {
         success: false,
@@ -71,53 +58,14 @@ const JournalRegistration = ({ accountOptions }: JournalRegistrationProps) => {
     // Track previous state to prevent infinite loop
     const prevStateRef = useRef<FormResponse>(initialState);
 
-    const preserveFormData = useCallback((errField: FormData) => {
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            type: (errField.get('type') as TransactionType) || prevFormData.type || 'EXPENSE',
-            date: (errField.get('date') as string) || prevFormData.date,
-            accountId: (errField.get('accountId') as string) || prevFormData.accountId,
-            amount: (errField.get('amount') as string) || prevFormData.amount,
-            paymentAccount:
-                (errField.get('paymentAccount') as PaymentAccount) ||
-                prevFormData.paymentAccount ||
-                'CASH',
-            taxType: (errField.get('taxType') as TaxType) || prevFormData.taxType || 'TAXABLE_10',
-            clientName: (errField.get('clientName') as string) || prevFormData.clientName,
-            description: (errField.get('description') as string) || prevFormData.description,
-            subAccount: (errField.get('subAccount') as string) || prevFormData.subAccount,
-            memo: (errField.get('memo') as string) || prevFormData.memo,
-        }));
-    }, []);
-
-    // Filter account options based on transaction type
-    const filteredAccountOptions = useMemo(() => {
-        return accountOptions.filter((account) => {
-            if (formData.type === 'INCOME') {
-                // For INCOME transactions, show REVENUE and ASSET categories
-                return account.category === 'REVENUE' || account.category === 'ASSET';
-            }
-            // For EXPENSE transactions, show EXPENSE, LIABILITY, and EQUITY categories
-            return (
-                account.category === 'EXPENSE' ||
-                account.category === 'LIABILITY' ||
-                account.category === 'EQUITY'
-            );
-        });
-    }, [accountOptions, formData.type]);
-
-    // Reset accountId if current selection is not valid for the selected transaction type
-    useEffect(() => {
-        if (formData.accountId) {
-            const isValidAccount = filteredAccountOptions.some(
-                (account) => account.value === formData.accountId
-            );
-
-            if (!isValidAccount) {
-                setFormData((prev) => ({ ...prev, accountId: '' }));
-            }
+    // Helper function to get default value from state.field or use initial value
+    const getFieldValue = (fieldName: string, initialValue: string): string => {
+        if (state.field) {
+            const value = state.field.get(fieldName);
+            return value ? String(value) : initialValue;
         }
-    }, [formData.accountId, filteredAccountOptions]);
+        return initialValue;
+    };
 
     // useEffect to show a toast when the form state changes after submission
     useEffect(() => {
@@ -126,47 +74,30 @@ const JournalRegistration = ({ accountOptions }: JournalRegistrationProps) => {
             return;
         }
 
-        if (state.field) preserveFormData(state.field);
-
         if (state.message && state.success) {
             showToast('success', '処理成功', state.message);
-            // setIsModalOpen(false); // Close modal on success
+            setIsOpen(false); // Close modal on success
+            setFormKey((prev) => prev + 1); // Reset form on success
+        } else if (state.field) {
+            // On error, increment error count to trigger form remount with preserved values
+            errorCountRef.current += 1;
         }
 
         // Update ref to current state
         prevStateRef.current = state;
-    }, [state, showToast, preserveFormData]);
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        const newFormData = { ...formData, [name]: value };
-        setFormData(newFormData);
-    };
-
-    const handleSelectChange = (name: string, value: string) => {
-        const newFormData = { ...formData, [name]: value };
-        setFormData(newFormData);
-
-        // Auto-set tax type when account changes
-        if (name === 'accountId') {
-            const selectedAccount = accountOptions.find((opt) => opt.value === value);
-            if (selectedAccount) {
-                setFormData({
-                    ...newFormData,
-                    taxType: selectedAccount.defaultTaxType,
-                });
-            }
-        }
-    };
+    }, [state, showToast]);
 
     return (
-        <Dialog>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
                 <Button variant="outline">登録</Button>
             </DialogTrigger>
             <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                 <ValidationErrors errors={state.errors} className="mb-4" />
-                <form action={formAction}>
+                <form
+                    key={state.field ? `error-${errorCountRef.current}` : formKey}
+                    action={formAction}
+                >
                     <DialogHeader>
                         <DialogTitle>仕訳を登録</DialogTitle>
                         <DialogDescription className="mt-2 mb-4">
@@ -182,12 +113,10 @@ const JournalRegistration = ({ accountOptions }: JournalRegistrationProps) => {
                                 収支区分
                             </FormLabel>
                             <RadioGroup
-                                value={formData.type}
-                                onValueChange={(value) => handleSelectChange('type', value)}
+                                name="type"
+                                defaultValue={getFieldValue('type', 'EXPENSE')}
                                 className="flex gap-4"
                             >
-                                {/* Hidden input for form submission */}
-                                <input type="hidden" name="type" value={formData.type} />
                                 {Object.entries(TransactionTypeLabel).map(([value, label]) => (
                                     <div key={value} className="flex items-center space-x-2">
                                         <RadioGroupItem value={value} id={`type-${value}`} />
@@ -214,8 +143,10 @@ const JournalRegistration = ({ accountOptions }: JournalRegistrationProps) => {
                                 type="date"
                                 id="date"
                                 name="date"
-                                value={formData.date}
-                                onChange={handleChange}
+                                defaultValue={getFieldValue(
+                                    'date',
+                                    new Date().toISOString().split('T')[0]
+                                )}
                                 required
                             />
                         </div>
@@ -230,14 +161,16 @@ const JournalRegistration = ({ accountOptions }: JournalRegistrationProps) => {
                             </FormLabel>
                             <Select
                                 name="accountId"
-                                value={formData.accountId}
-                                onValueChange={(value) => handleSelectChange('accountId', value)}
+                                defaultValue={getFieldValue(
+                                    'accountId',
+                                    accountOptions[0]?.value || ''
+                                )}
                             >
                                 <SelectTrigger id="accountId">
                                     <SelectValue placeholder="勘定科目を選択" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {filteredAccountOptions.map((option) => (
+                                    {accountOptions.map((option) => (
                                         <SelectItem key={option.value} value={option.value}>
                                             {option.label}
                                         </SelectItem>
@@ -258,8 +191,7 @@ const JournalRegistration = ({ accountOptions }: JournalRegistrationProps) => {
                                 type="number"
                                 id="amount"
                                 name="amount"
-                                value={formData.amount}
-                                onChange={handleChange}
+                                defaultValue={getFieldValue('amount', '0')}
                                 required
                                 min="0"
                                 step="1"
@@ -276,8 +208,7 @@ const JournalRegistration = ({ accountOptions }: JournalRegistrationProps) => {
                             </FormLabel>
                             <Select
                                 name="taxType"
-                                value={formData.taxType}
-                                onValueChange={(value) => handleSelectChange('taxType', value)}
+                                defaultValue={getFieldValue('taxType', 'TAXABLE_10')}
                             >
                                 <SelectTrigger id="taxType">
                                     <SelectValue />
@@ -304,8 +235,7 @@ const JournalRegistration = ({ accountOptions }: JournalRegistrationProps) => {
                                 type="text"
                                 id="clientName"
                                 name="clientName"
-                                value={formData.clientName}
-                                onChange={handleChange}
+                                defaultValue={getFieldValue('clientName', '')}
                                 required
                             />
                         </div>
@@ -320,10 +250,7 @@ const JournalRegistration = ({ accountOptions }: JournalRegistrationProps) => {
                             </FormLabel>
                             <Select
                                 name="paymentAccount"
-                                value={formData.paymentAccount}
-                                onValueChange={(value) =>
-                                    handleSelectChange('paymentAccount', value)
-                                }
+                                defaultValue={getFieldValue('paymentAccount', 'CASH')}
                             >
                                 <SelectTrigger id="paymentAccount">
                                     <SelectValue />
@@ -350,8 +277,7 @@ const JournalRegistration = ({ accountOptions }: JournalRegistrationProps) => {
                                 type="text"
                                 id="description"
                                 name="description"
-                                value={formData.description ?? ''}
-                                onChange={handleChange}
+                                defaultValue={getFieldValue('description', '')}
                                 placeholder="取引の説明（任意）"
                             />
                         </div>
@@ -364,8 +290,7 @@ const JournalRegistration = ({ accountOptions }: JournalRegistrationProps) => {
                                 id="memo"
                                 name="memo"
                                 rows={3}
-                                value={formData.memo ?? ''}
-                                onChange={handleChange}
+                                defaultValue={getFieldValue('memo', '')}
                                 placeholder="詳細メモ（任意）"
                             />
                         </div>

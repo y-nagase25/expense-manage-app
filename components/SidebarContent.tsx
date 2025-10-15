@@ -9,7 +9,7 @@ const menuItems = [
     {
         title: 'ホーム',
         icon: Home,
-        href: '/',
+        href: '/home',
     },
     {
         title: '仕訳帳',
