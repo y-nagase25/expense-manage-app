@@ -7,6 +7,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { formatAmount, formatBalance } from '@/lib/format';
 import { getLedgerSummary } from '@/lib/loaders/ledgers';
 
 export const dynamic = 'force-dynamic';
@@ -17,24 +18,6 @@ const pageContent = {
 
 export default async function LedgersPage() {
     const ledgerSummaries = await getLedgerSummary();
-
-    // Format amount with currency
-    const formatAmount = (amount: number | string) => {
-        const num = typeof amount === 'string' ? Number.parseFloat(amount) : amount;
-        return new Intl.NumberFormat('ja-JP', {
-            style: 'currency',
-            currency: 'JPY',
-        }).format(num);
-    };
-
-    // Format balance with accounting notation (negative in parentheses)
-    const formatBalance = (balance: string) => {
-        const num = Number.parseFloat(balance);
-        if (num < 0) {
-            return `(${formatAmount(Math.abs(num))})`;
-        }
-        return formatAmount(num);
-    };
 
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">

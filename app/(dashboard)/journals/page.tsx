@@ -7,6 +7,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { formatAmount, formatDate } from '@/lib/format';
 import { getAccountOptions } from '@/lib/loaders/accounts';
 import { getJournals } from '@/lib/loaders/journals';
 import { cn } from '@/lib/utils';
@@ -22,25 +23,6 @@ const pageContent = {
 
 export default async function JournalPage() {
     const [journals, accountOptions] = await Promise.all([getJournals(), getAccountOptions()]);
-
-    // Format amount with currency
-    const formatAmount = (amount: number | string) => {
-        const num = typeof amount === 'string' ? Number.parseFloat(amount) : amount;
-        return new Intl.NumberFormat('ja-JP', {
-            style: 'currency',
-            currency: 'JPY',
-        }).format(num);
-    };
-
-    // Format date to YYYY-MM-DD
-    const formatDate = (date: Date | string) => {
-        const d = typeof date === 'string' ? new Date(date) : date;
-        return d.toLocaleDateString('ja-JP', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-        });
-    };
 
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
