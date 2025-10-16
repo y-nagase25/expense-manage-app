@@ -77,7 +77,7 @@ export async function createJournalEntry(
 
         revalidatePath('/journals');
 
-        return { success: true, message: '仕訳の登録が完了しました' };
+        return { success: true, message: '取引の登録が完了しました' };
     } catch (error: unknown) {
         if (error instanceof ZodError) {
             return {
@@ -159,7 +159,7 @@ export async function updateJournalEntry(
         if (result.count === 0) {
             return {
                 success: false,
-                message: '仕訳が見つかりませんでした',
+                message: '取引が見つかりませんでした',
                 field: formData,
             };
         }
@@ -194,13 +194,9 @@ export async function updateJournalEntry(
 /**
  * Delete journal entry
  */
-export async function deleteJournalEntry(
-    _prevState: FormResponse,
-    formData: FormData
-): Promise<FormResponse> {
+export async function deleteJournalEntry(id: string): Promise<FormResponse> {
     try {
         const userId = await getCurrentUserId();
-        const id = formData.get('id') as string;
 
         if (!id) {
             return {
@@ -219,15 +215,79 @@ export async function deleteJournalEntry(
         if (result.count === 0) {
             return {
                 success: false,
-                message: '仕訳が見つかりませんでした',
+                message: '取引が見つかりませんでした',
             };
         }
 
         revalidatePath('/journals');
-        return { success: true, message: '仕訳を削除しました' };
+        return { success: true, message: '取引を削除しました' };
     } catch (error: unknown) {
         if (error instanceof Error) {
             console.error('Error deleting journal entry:', error);
+            return {
+                success: false,
+                message: `エラーが発生しました: ${error.message}`,
+            };
+        }
+        return {
+            success: false,
+            message: '予期しないエラーが発生しました',
+        };
+    }
+}
+
+/**
+ * Duplicate journal entry
+ */
+export async function duplicateJournalEntry(id: string): Promise<FormResponse> {
+    try {
+        const userId = await getCurrentUserId();
+
+        if (!id) {
+            return {
+                success: false,
+                message: 'IDが指定されていません',
+            };
+        }
+
+        // Get existing journal entry
+        const existingJournal = await prisma.journal.findFirst({
+            where: {
+                id,
+                userId,
+            },
+        });
+
+        if (!existingJournal) {
+            return {
+                success: false,
+                message: '取引が見つかりませんでした',
+            };
+        }
+
+        // Create a duplicate entry (exclude id, createdAt, updatedAt)
+        await prisma.journal.create({
+            data: {
+                date: existingJournal.date,
+                type: existingJournal.type,
+                accountId: existingJournal.accountId,
+                amount: existingJournal.amount,
+                paymentAccount: existingJournal.paymentAccount,
+                taxType: existingJournal.taxType,
+                clientName: existingJournal.clientName,
+                description: existingJournal.description,
+                subAccount: existingJournal.subAccount,
+                memo: existingJournal.memo,
+                fiscalYear: existingJournal.fiscalYear,
+                userId,
+            },
+        });
+
+        revalidatePath('/journals');
+        return { success: true, message: '取引をコピーしました' };
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            console.error('Error duplicating journal entry:', error);
             return {
                 success: false,
                 message: `エラーが発生しました: ${error.message}`,

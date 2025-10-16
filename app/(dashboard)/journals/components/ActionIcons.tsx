@@ -1,83 +1,82 @@
 'use client';
 
-import { Edit, Trash } from 'lucide-react';
-import Link from 'next/link';
-import { useActionState, useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from '@/components/ui/dialog';
+import { Copy, Trash } from 'lucide-react';
+import { useState, useTransition } from 'react';
+import { ActionDialog } from '@/components/common/ActionDialog';
+import { Spinner } from '@/components/ui/spinner';
 import { useToast } from '@/hooks/useToast';
-import type { FormResponse } from '@/lib/types/types';
-import { deleteJournalEntry } from '../actions';
+import { deleteJournalEntry, duplicateJournalEntry } from '../actions';
 
-const initialState: FormResponse = {
-    success: false,
-    message: '',
-};
-
-const ActionIcons = ({ id }: { id: string }) => {
+export function ActionIcons({ id }: { id: string }) {
     const { showToast } = useToast();
-    const [isOpen, setIsOpen] = useState(false);
-    const [state, formAction, isPending] = useActionState(deleteJournalEntry, initialState);
+    const [isDeletePending, startDeleteTransition] = useTransition();
+    const [isDuplicatePending, startDuplicateTransition] = useTransition();
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    const [isDuplicateOpen, setIsDuplicateOpen] = useState(false);
 
-    useEffect(() => {
-        if (state.message) {
-            if (state.success) {
-                showToast('success', state.message);
-                setIsOpen(false);
+    const handleDelete = () => {
+        startDeleteTransition(async () => {
+            const res = await deleteJournalEntry(id);
+            if (res.success) {
+                showToast('info', res.message);
+                setIsDeleteOpen(false);
             } else {
-                showToast('error', state.message);
+                showToast('error', res.message);
             }
-        }
-    }, [state, showToast]);
+        });
+    };
+
+    const handleDuplicate = () => {
+        startDuplicateTransition(async () => {
+            const res = await duplicateJournalEntry(id);
+            if (res.success) {
+                showToast('info', res.message);
+                setIsDuplicateOpen(false);
+            } else {
+                showToast('error', res.message);
+            }
+        });
+    };
 
     return (
         <>
-            <Link href={`/journals/${id}`} className="text-primary hover:text-primary/80">
-                <Edit color="var(--primary)" size={24} />
-            </Link>
-            <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <DialogTrigger asChild>
-                    <button
-                        type="button"
-                        className="text-destructive hover:text-destructive/80"
-                        aria-label="削除"
-                    >
-                        <Trash color="var(--destructive)" size={24} />
-                    </button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-md">
-                    <DialogHeader>
-                        <DialogTitle>取引削除</DialogTitle>
-                        <DialogDescription>
-                            削除しますか？この操作は取り消せません。
-                        </DialogDescription>
-                    </DialogHeader>
-                    <form action={formAction}>
-                        <input type="hidden" name="id" value={id} />
-                        <DialogFooter className="sm:justify-start">
-                            <DialogClose asChild>
-                                <Button type="button" variant="secondary">
-                                    キャンセル
-                                </Button>
-                            </DialogClose>
-                            <Button type="submit" variant="destructive" disabled={isPending}>
-                                {isPending ? '削除中...' : '削除'}
-                            </Button>
-                        </DialogFooter>
-                    </form>
-                </DialogContent>
-            </Dialog>
+            <ActionDialog
+                trigger={<Trash color="var(--destructive)" size={24} />}
+                title="取引削除"
+                description="削除しますか？この操作は取り消せません。"
+                onConfirm={handleDelete}
+                pending={isDeletePending}
+                variant="destructive"
+                confirmLabel="削除"
+                loader={
+                    <>
+                        <Spinner />
+                        削除中...
+                    </>
+                }
+                state={{
+                    open: isDeleteOpen,
+                    onOpenChange: () => setIsDeleteOpen((prev) => !prev),
+                }}
+            />
+            <ActionDialog
+                trigger={<Copy color="var(--ring)" size={24} />}
+                title="取引コピー"
+                description="取引をコピーして作成します。"
+                onConfirm={handleDuplicate}
+                pending={isDuplicatePending}
+                confirmLabel="OK"
+                loader={
+                    <>
+                        <Spinner />
+                        コピー中...
+                    </>
+                }
+                state={{
+                    open: isDuplicateOpen,
+                    onOpenChange: () => setIsDuplicateOpen((prev) => !prev),
+                }}
+            />
         </>
     );
-};
-
-export default ActionIcons;
+}
