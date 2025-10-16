@@ -1,22 +1,20 @@
 'use client';
 
+import { useSidebarContext } from '@/components/SidebarProvider';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { SidebarContent } from './SidebarContent';
 
-interface SidebarProps {
-    open: boolean;
-    onClose: () => void;
-}
+export function Sidebar() {
+    const { sidebarOpen, closeSidebar } = useSidebarContext();
 
-export function Sidebar({ open, onClose }: SidebarProps) {
     return (
         <>
-            <Sheet open={open} onOpenChange={onClose}>
+            <Sheet open={sidebarOpen} onOpenChange={closeSidebar}>
                 <SheetContent side="left" className="w-64 p-0" hideClose>
                     <SheetHeader className="border-b p-4">
                         <SheetTitle>メニュー</SheetTitle>
                     </SheetHeader>
-                    <SidebarContent onClose={onClose} />
+                    <SidebarContent onClose={closeSidebar} />
                 </SheetContent>
             </Sheet>
 
