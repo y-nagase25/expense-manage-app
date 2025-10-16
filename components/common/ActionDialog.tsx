@@ -16,25 +16,30 @@ type ConfirmActionDialogProps = {
     trigger: React.ReactNode;
     title: string;
     description?: string;
-    confirmLabel: string;
     onConfirm: () => void;
     pending: boolean;
     variant?: 'default' | 'destructive' | 'secondary' | 'outline' | 'ghost' | 'link';
+    confirmLabel?: React.ReactNode;
     loader?: React.ReactNode;
+    state: {
+        open: boolean;
+        onOpenChange: () => void;
+    };
 };
 
 export function ActionDialog({
     trigger,
     title,
     description,
-    confirmLabel,
     onConfirm,
     pending,
     variant = 'default',
+    confirmLabel = 'OK',
     loader = 'loading...',
+    state,
 }: ConfirmActionDialogProps) {
     return (
-        <Dialog>
+        <Dialog open={state.open} onOpenChange={state.onOpenChange}>
             <DialogTrigger asChild>{trigger}</DialogTrigger>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>

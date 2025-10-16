@@ -20,7 +20,7 @@ import TransactionTypeTag from './components/TransactionTypeTag';
 export const dynamic = 'force-dynamic';
 
 const pageContent = {
-    title: '仕訳一覧',
+    title: '取引一覧',
 } as const;
 
 export default async function JournalPage() {
