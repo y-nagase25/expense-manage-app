@@ -194,9 +194,20 @@ export async function updateJournalEntry(
 /**
  * Delete journal entry
  */
-export async function deleteJournalEntry(id: string) {
+export async function deleteJournalEntry(
+    _prevState: FormResponse,
+    formData: FormData
+): Promise<FormResponse> {
     try {
         const userId = await getCurrentUserId();
+        const id = formData.get('id') as string;
+
+        if (!id) {
+            return {
+                success: false,
+                message: 'IDが指定されていません',
+            };
+        }
 
         const result = await prisma.journal.deleteMany({
             where: {
@@ -206,12 +217,25 @@ export async function deleteJournalEntry(id: string) {
         });
 
         if (result.count === 0) {
-            console.warn(`Journal not found for id: ${id}`);
+            return {
+                success: false,
+                message: '仕訳が見つかりませんでした',
+            };
         }
 
         revalidatePath('/journals');
+        return { success: true, message: '仕訳を削除しました' };
     } catch (error: unknown) {
-        console.error('Error deleting journal entry:', error);
-        throw error;
+        if (error instanceof Error) {
+            console.error('Error deleting journal entry:', error);
+            return {
+                success: false,
+                message: `エラーが発生しました: ${error.message}`,
+            };
+        }
+        return {
+            success: false,
+            message: '予期しないエラーが発生しました',
+        };
     }
 }
