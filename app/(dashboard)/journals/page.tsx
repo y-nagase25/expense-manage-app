@@ -1,3 +1,5 @@
+import { Edit } from 'lucide-react';
+import Link from 'next/link';
 import { PageBreadcrumb } from '@/components/PageBreadcrumb';
 import {
     Table,
@@ -11,7 +13,7 @@ import { formatAmount, formatDate } from '@/lib/format';
 import { getAccountOptions } from '@/lib/loaders/accounts';
 import { getJournals } from '@/lib/loaders/journals';
 import { cn } from '@/lib/utils';
-import ActionIcons from './components/ActionIcons';
+import { ActionIcons } from './components/ActionIcons';
 import JournalRegistration from './components/JournalRegistration';
 import TransactionTypeTag from './components/TransactionTypeTag';
 
@@ -87,6 +89,12 @@ export default async function JournalPage() {
                                         </TableCell>
                                         <TableCell>
                                             <div className="flex items-center justify-end space-x-4">
+                                                <Link
+                                                    href={`/journals/${j.id}`}
+                                                    className="text-primary hover:text-primary/80"
+                                                >
+                                                    <Edit color="var(--primary)" size={24} />
+                                                </Link>
                                                 <ActionIcons id={j.id} />
                                             </div>
                                         </TableCell>
