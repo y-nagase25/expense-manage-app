@@ -1,7 +1,4 @@
-/**
- * デバッグユーティリティ
- * クエリの実行時間やデータサマリーを表示するヘルパー関数
- */
+import type { Prisma, PrismaClient } from '@prisma/client';
 
 /**
  * クエリをラップして実行時間とデータサマリーを表示
@@ -138,4 +135,62 @@ export async function measureQuery<T>(
     const duration = endTime - startTime;
 
     return { result, duration };
+}
+
+// ===========================================
+// lib/db.ts
+// ===========================================
+
+// SQL クエリのログ設定
+export const debugLogConfig = [
+    {
+        emit: 'event' as const,
+        level: 'query' as const,
+    },
+    {
+        emit: 'stdout' as const,
+        level: 'info' as const,
+    },
+    {
+        emit: 'stdout' as const,
+        level: 'warn' as const,
+    },
+    {
+        emit: 'stdout' as const,
+        level: 'error' as const,
+    },
+];
+
+// クエリログの出力関数
+export function logQuery(prisma: PrismaClient): void {
+    // biome-ignore lint/suspicious/noExplicitAny: narrow Prisma's event typing when log config is dynamic
+    (prisma as any).$on('query', (e: Prisma.QueryEvent) => {
+        // トランザクション制御や設定系のクエリは除外
+        const excludePatterns = [
+            /^BEGIN$/i,
+            /^COMMIT$/i,
+            /^ROLLBACK$/i,
+            /^SET\s+/i,
+            /^SHOW\s+/i,
+            /^DEALLOCATE\s+/i,
+            /^SELECT\s+1$/i, // ヘルスチェック
+        ];
+
+        const shouldExclude = excludePatterns.some((pattern) => pattern.test(e.query));
+
+        if (shouldExclude) {
+            return; // このクエリはログに出力しない
+        }
+
+        console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        console.log('📊 Prisma Query Log');
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        console.log(`⏱️  Duration: ${e.duration}ms`);
+        console.log(`🎯 Target: ${e.target}`);
+        console.log(`📝 Query:\n${e.query}`);
+        if (e.params && e.params !== '[]') {
+            console.log(`📦 Params: ${e.params}`);
+        }
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+    });
 }
