@@ -9,23 +9,6 @@ import type { FormResponse } from '@/lib/types/types';
 import { journalEntrySchema, journalEntryUpdateSchema } from '@/lib/validations/journal';
 
 /**
- * Get single journal by ID with account relation
- */
-export async function getJournalById(id: string) {
-    const userId = await getCurrentUserId();
-
-    return await prisma.journal.findFirst({
-        where: {
-            id,
-            userId,
-        },
-        include: {
-            account: true,
-        },
-    });
-}
-
-/**
  * Create new journal entry
  */
 export async function createJournalEntry(
@@ -39,7 +22,8 @@ export async function createJournalEntry(
         const rawData = {
             type: formData.get('type'),
             date: formData.get('date'),
-            accountId: formData.get('accountId'),
+            debitAccountId: formData.get('debitAccountId'),
+            creditAccountId: formData.get('creditAccountId'),
             amount: formData.get('amount'),
             paymentAccount: formData.get('paymentAccount'),
             taxType: formData.get('taxType'),
@@ -62,7 +46,8 @@ export async function createJournalEntry(
             data: {
                 type: validatedData.type,
                 date: date,
-                accountId: validatedData.accountId,
+                debitAccountId: validatedData.debitAccountId,
+                creditAccountId: validatedData.creditAccountId,
                 amount: amount,
                 paymentAccount: validatedData.paymentAccount,
                 taxType: validatedData.taxType,
@@ -91,7 +76,7 @@ export async function createJournalEntry(
             console.error('Error creating journal entry:', error);
             return {
                 success: false,
-                message: `エラーが発生しました: ${error.message}`,
+                message: 'エラーが発生しました',
                 field: formData,
             };
         }
@@ -118,7 +103,8 @@ export async function updateJournalEntry(
             id: formData.get('id'),
             type: formData.get('type'),
             date: formData.get('date'),
-            accountId: formData.get('accountId'),
+            debitAccountId: formData.get('debitAccountId'),
+            creditAccountId: formData.get('creditAccountId'),
             amount: formData.get('amount'),
             paymentAccount: formData.get('paymentAccount'),
             taxType: formData.get('taxType'),
@@ -144,7 +130,8 @@ export async function updateJournalEntry(
             },
             data: {
                 date: date,
-                accountId: validatedData.accountId,
+                debitAccountId: validatedData.debitAccountId,
+                creditAccountId: validatedData.creditAccountId,
                 amount: amount,
                 paymentAccount: validatedData.paymentAccount,
                 taxType: validatedData.taxType,
@@ -270,7 +257,8 @@ export async function duplicateJournalEntry(id: string): Promise<FormResponse> {
             data: {
                 date: existingJournal.date,
                 type: existingJournal.type,
-                accountId: existingJournal.accountId,
+                debitAccountId: existingJournal.debitAccountId,
+                creditAccountId: existingJournal.creditAccountId,
                 amount: existingJournal.amount,
                 paymentAccount: existingJournal.paymentAccount,
                 taxType: existingJournal.taxType,

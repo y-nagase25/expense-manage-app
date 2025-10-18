@@ -14,8 +14,11 @@ export const journalEntrySchema = z.object({
     // Transaction date (required)
     date: z.string().min(1, '日付を入力してください'),
 
-    // Account ID (required)
-    accountId: z.string().min(1, '勘定科目を選択してください'),
+    // Debit Account ID (required)
+    debitAccountId: z.string().min(1, '借方勘定科目を選択してください'),
+
+    // Credit Account ID (required)
+    creditAccountId: z.string().min(1, '貸方勘定科目を選択してください'),
 
     // Amount (required, 1-8 digits)
     amount: z

@@ -81,6 +81,7 @@ const JournalRegistration = ({ accountOptions }: JournalRegistrationProps) => {
         } else if (state.field) {
             // On error, increment error count to trigger form remount with preserved values
             errorCountRef.current += 1;
+            showToast('error', state.message);
         }
 
         // Update ref to current state
@@ -151,23 +152,51 @@ const JournalRegistration = ({ accountOptions }: JournalRegistrationProps) => {
                             />
                         </div>
 
-                        <div className="space-y-2 md:col-span-2">
+                        <div className="space-y-2">
                             <FormLabel
-                                htmlFor="accountId"
+                                htmlFor="debitAccountId"
                                 required
-                                tooltip="取引内容に応じた勘定科目を選択してください"
+                                tooltip="借方（取引の左側）の勘定科目を選択してください"
                             >
-                                勘定科目
+                                借方勘定科目
                             </FormLabel>
                             <Select
-                                name="accountId"
+                                name="debitAccountId"
                                 defaultValue={getFieldValue(
-                                    'accountId',
+                                    'debitAccountId',
                                     accountOptions[0]?.value || ''
                                 )}
                             >
-                                <SelectTrigger id="accountId">
-                                    <SelectValue placeholder="勘定科目を選択" />
+                                <SelectTrigger id="debitAccountId">
+                                    <SelectValue placeholder="借方勘定科目を選択" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {accountOptions.map((option) => (
+                                        <SelectItem key={option.value} value={option.value}>
+                                            {option.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                            <FormLabel
+                                htmlFor="creditAccountId"
+                                required
+                                tooltip="貸方（取引の右側）の勘定科目を選択してください"
+                            >
+                                貸方勘定科目
+                            </FormLabel>
+                            <Select
+                                name="creditAccountId"
+                                defaultValue={getFieldValue(
+                                    'creditAccountId',
+                                    accountOptions[0]?.value || ''
+                                )}
+                            >
+                                <SelectTrigger id="creditAccountId">
+                                    <SelectValue placeholder="貸方勘定科目を選択" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {accountOptions.map((option) => (

@@ -29,10 +29,13 @@ model Journal {
     /// 仕訳日（取引発生日）
     date           DateTime        @db.Date
     /// 支出・収入の区分
-    type           TransactionType
-    /// 勘定科目ID
-    accountId      String          @map("account_id")
-    account        Account         @relation(fields: [accountId], references: [id])
+    type            TransactionType
+    /// 借方勘定科目ID
+    debitAccountId  String          @map("debit_account_id")
+    debitAccount    Account         @relation("DebitAccount", fields: [debitAccountId], references: [id])
+    /// 貸方勘定科目ID
+    creditAccountId String          @map("credit_account_id")
+    creditAccount   Account         @relation("CreditAccount", fields: [creditAccountId], references: [id])
     /// 金額
     amount         Decimal         @db.Decimal(15, 2)
     /// 入出金があった口座（銀行口座や現金）
@@ -82,9 +85,10 @@ model Account {
     /// 表示フラグ（1: 表示, 0: 非表示）
     isDisplay      Boolean         @default(false) @map("is_display")
 
-    createdAt DateTime  @default(now()) @map("created_at")
-    updatedAt DateTime  @updatedAt @map("updated_at")
-    Journal   Journal[]
+    createdAt      DateTime  @default(now()) @map("created_at")
+    updatedAt      DateTime  @updatedAt @map("updated_at")
+    debitJournals  Journal[] @relation("DebitAccount")
+    creditJournals Journal[] @relation("CreditAccount")
 
     @@index([code])
     @@index([category, displayOrder]) // カテゴリ別・順序での取得用

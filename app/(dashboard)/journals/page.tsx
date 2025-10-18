@@ -42,7 +42,8 @@ export default async function JournalPage() {
                             <TableRow>
                                 <TableHead>収支</TableHead>
                                 <TableHead>日付</TableHead>
-                                <TableHead>勘定科目</TableHead>
+                                <TableHead>借方勘定科目</TableHead>
+                                <TableHead>貸方勘定科目</TableHead>
                                 <TableHead className="text-right">金額</TableHead>
                                 <TableHead>取引先</TableHead>
                                 <TableHead>備考</TableHead>
@@ -55,7 +56,7 @@ export default async function JournalPage() {
                             {journals.length === 0 ? (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={7}
+                                        colSpan={8}
                                         className="text-center text-muted-foreground"
                                     >
                                         データがありません
@@ -69,7 +70,10 @@ export default async function JournalPage() {
                                         </TableCell>
                                         <TableCell>{formatDate(j.date)}</TableCell>
                                         <TableCell className="text-muted-foreground">
-                                            {j.account.name}
+                                            {j.debitAccount.name}
+                                        </TableCell>
+                                        <TableCell className="text-muted-foreground">
+                                            {j.creditAccount.name}
                                         </TableCell>
                                         <TableCell
                                             className={cn(

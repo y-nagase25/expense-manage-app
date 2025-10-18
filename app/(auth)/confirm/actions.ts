@@ -52,7 +52,7 @@ export async function acceptTerms(
             console.error('Error accepting terms:', error);
             return {
                 success: false,
-                message: `エラーが発生しました: ${error.message}`,
+                message: 'エラーが発生しました',
                 field: formData,
             };
         }

@@ -1,6 +1,5 @@
 'use client';
 
-import type { Account } from '@prisma/client';
 import {
     Table,
     TableBody,
@@ -11,52 +10,17 @@ import {
 } from '@/components/ui/table';
 import { formatCurrency, formatToJST } from '@/lib/format';
 import type { SerializedJournal } from '@/lib/types/journals';
-import { PaymentAccountLabel, TaxTypeLabel } from '@/lib/types/types';
+import { TaxTypeLabel } from '@/lib/types/types';
 import { cn } from '@/lib/utils';
 import TransactionTypeTag from './TransactionTypeTag';
 
-type Props = SerializedJournal & { account: Account };
-
-export function JournalPreview({ journal }: { journal: Props }) {
+export function JournalPreview({ journal }: { journal: SerializedJournal }) {
     // Format date
     const formattedDate = formatToJST(journal.date, false).slice(0, 10);
 
-    // 取引の種類と勘定科目に基づいて借方と貸方を決定します
-    const isIncome = journal.type === 'INCOME';
-    const accountCategory = journal.account.category;
-
-    let debitAccount: string;
-    let creditAccount: string;
-
-    if (isIncome) {
-        if (
-            // 資産(現金、売掛金、固定資産など)
-            accountCategory === 'ASSET' ||
-            accountCategory === 'LIABILITY' ||
-            accountCategory === 'EQUITY'
-        ) {
-            debitAccount = `${journal.account.code} ${journal.account.name}`;
-            creditAccount = '売上高';
-        } else {
-            // 収益(売上高、雑収入など)
-            debitAccount = '普通預金';
-            creditAccount = `${journal.account.code} ${journal.account.name}`;
-        }
-    } else {
-        if (accountCategory === 'EXPENSE') {
-            // 費用(仕入、経費、人件費など)
-            debitAccount = `${journal.account.code} ${journal.account.name}`;
-            creditAccount = PaymentAccountLabel[journal.paymentAccount];
-        } else if (accountCategory === 'ASSET' || accountCategory === 'LIABILITY') {
-            // 資産(現金、売掛金、固定資産など), 負債(買掛金、借入金など)
-            debitAccount = `${journal.account.code} ${journal.account.name}`;
-            creditAccount = PaymentAccountLabel[journal.paymentAccount];
-        } else {
-            // Default case
-            debitAccount = `${journal.account.code} ${journal.account.name}`;
-            creditAccount = PaymentAccountLabel[journal.paymentAccount];
-        }
-    }
+    // 借方・貸方の勘定科目を直接表示
+    const debitAccount = `${journal.debitAccount.code} ${journal.debitAccount.name}`;
+    const creditAccount = `${journal.creditAccount.code} ${journal.creditAccount.name}`;
 
     return (
         <div className="rounded-lg border bg-card overflow-hidden">
