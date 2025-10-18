@@ -14,7 +14,8 @@ export const getJournals = cache(async (): Promise<JournalWithAccount[]> => {
             userId,
         },
         include: {
-            account: true,
+            debitAccount: true,
+            creditAccount: true,
         },
         orderBy: {
             date: 'desc',
@@ -31,7 +32,8 @@ export const getSerializedJournal = cache(async (id: string): Promise<Serialized
             userId,
         },
         include: {
-            account: true,
+            debitAccount: true,
+            creditAccount: true,
         },
     });
 

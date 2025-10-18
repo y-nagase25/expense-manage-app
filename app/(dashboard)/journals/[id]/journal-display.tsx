@@ -113,17 +113,39 @@ export function JournalDiplay({ journal, accountOptions }: Props) {
                         />
                     </div>
 
-                    <div className="space-y-2 sm:col-span-2">
+                    <div className="space-y-2">
                         <FormLabel
-                            htmlFor="accountId"
+                            htmlFor="debitAccountId"
                             required
-                            tooltip="取引内容に応じた勘定科目を選択してください"
+                            tooltip="借方（取引の左側）の勘定科目を選択してください"
                         >
-                            勘定科目
+                            借方勘定科目
                         </FormLabel>
-                        <Select name="accountId" defaultValue={journal.accountId}>
-                            <SelectTrigger id="accountId">
-                                <SelectValue placeholder="勘定科目を選択" />
+                        <Select name="debitAccountId" defaultValue={journal.debitAccountId}>
+                            <SelectTrigger id="debitAccountId">
+                                <SelectValue placeholder="借方勘定科目を選択" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {accountOptions.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                        {option.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                        <FormLabel
+                            htmlFor="creditAccountId"
+                            required
+                            tooltip="貸方（取引の右側）の勘定科目を選択してください"
+                        >
+                            貸方勘定科目
+                        </FormLabel>
+                        <Select name="creditAccountId" defaultValue={journal.creditAccountId}>
+                            <SelectTrigger id="creditAccountId">
+                                <SelectValue placeholder="貸方勘定科目を選択" />
                             </SelectTrigger>
                             <SelectContent>
                                 {accountOptions.map((option) => (

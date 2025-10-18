@@ -2,7 +2,8 @@
 import type { Account, Journal } from '@prisma/client';
 
 export type JournalWithAccount = Journal & {
-    account: Account;
+    debitAccount: Account;
+    creditAccount: Account;
 };
 
 /**
@@ -10,5 +11,6 @@ export type JournalWithAccount = Journal & {
  */
 export type SerializedJournal = Omit<Journal, 'amount'> & {
     amount: string;
-    account: Account;
+    debitAccount: Account;
+    creditAccount: Account;
 };
