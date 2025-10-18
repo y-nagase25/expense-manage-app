@@ -10,7 +10,6 @@ import {
 } from '@/components/ui/table';
 import { formatCurrency, formatToJST } from '@/lib/format';
 import type { SerializedJournal } from '@/lib/types/journals';
-import { TaxTypeLabel } from '@/lib/types/types';
 import { cn } from '@/lib/utils';
 import TransactionTypeTag from './TransactionTypeTag';
 
@@ -39,17 +38,11 @@ export function JournalPreview({ journal }: { journal: SerializedJournal }) {
                         <TableCell>
                             <div className="space-y-1">
                                 <div className="font-medium">{debitAccount}</div>
-                                <div className="text-sm text-muted-foreground">
-                                    {TaxTypeLabel[journal.taxType]}
-                                </div>
                             </div>
                         </TableCell>
                         <TableCell>
                             <div className="space-y-1">
                                 <div className="font-medium">{creditAccount}</div>
-                                <div className="text-sm text-muted-foreground">
-                                    {TaxTypeLabel[journal.taxType]}
-                                </div>
                             </div>
                         </TableCell>
                         <TableCell

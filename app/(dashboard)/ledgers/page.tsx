@@ -7,7 +7,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { formatAmount, formatBalance } from '@/lib/format';
+import { formatAmount } from '@/lib/format';
 import { getLedgerSummary } from '@/lib/loaders/ledgers';
 
 export const dynamic = 'force-dynamic';
@@ -65,7 +65,7 @@ export default async function LedgersPage() {
                                             {formatAmount(ledger.totalAmount.toString())}
                                         </TableCell>
                                         <TableCell className="text-right font-medium">
-                                            {formatBalance(ledger.balance.toString())}
+                                            {formatAmount(ledger.balance.toString())}
                                         </TableCell>
                                     </TableRow>
                                 ))

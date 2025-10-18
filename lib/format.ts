@@ -44,7 +44,7 @@ export function formatAmount(amount: number | string): string {
     return new Intl.NumberFormat('ja-JP', {
         style: 'currency',
         currency: 'JPY',
-    }).format(num);
+    }).format(Math.abs(num));
 }
 
 /**
@@ -59,17 +59,4 @@ export function formatDate(date: Date | string): string {
         month: '2-digit',
         day: '2-digit',
     });
-}
-
-/**
- * 残高を会計記法でフォーマットする（マイナスは括弧表記）
- * @param balance 残高文字列
- * @returns フォーマットされた残高文字列
- */
-export function formatBalance(balance: string): string {
-    const num = Number.parseFloat(balance);
-    if (num < 0) {
-        return `(${formatAmount(Math.abs(num))})`;
-    }
-    return formatAmount(num);
 }

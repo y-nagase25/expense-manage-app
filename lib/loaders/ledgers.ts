@@ -88,7 +88,7 @@ export const getLedgerSummary = cache(async (): Promise<LedgerSummary[]> => {
     const ledgerSummaries: LedgerSummary[] = Array.from(ledgerMap.values()).map((entry) => {
         const debitTotal = entry.debitTotal;
         const creditTotal = entry.creditTotal;
-        const totalAmount = debitTotal.add(creditTotal);
+        const totalAmount = debitTotal.sub(creditTotal);
         const balance = debitTotal.sub(creditTotal);
 
         return {
