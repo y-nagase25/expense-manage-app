@@ -4,12 +4,12 @@ import { cache } from 'react';
 import { getCurrentUserId } from '@/lib/auth';
 import { prisma } from '@/lib/db';
 import { serialize } from '../serializer';
-import type { JournalWithAccount, SerializedJournal } from '../types/journals';
+import type { SerializedJournal } from '../types/journals';
 
-export const getJournals = cache(async (): Promise<JournalWithAccount[]> => {
+export const getJournals = cache(async (): Promise<SerializedJournal[]> => {
     const userId = await getCurrentUserId();
 
-    return await prisma.journal.findMany({
+    const journals = await prisma.journal.findMany({
         where: {
             userId,
         },
@@ -21,6 +21,8 @@ export const getJournals = cache(async (): Promise<JournalWithAccount[]> => {
             date: 'desc',
         },
     });
+
+    return journals.map((journal) => serialize(journal)) as SerializedJournal[];
 });
 
 export const getSerializedJournal = cache(async (id: string): Promise<SerializedJournal | null> => {
