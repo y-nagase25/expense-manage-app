@@ -1,6 +1,6 @@
 'use client';
 
-import { FileText, Home, Settings, User } from 'lucide-react';
+import { Calculator, FileText, HelpCircle, Home, User } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -18,7 +18,7 @@ const menuItems = [
     },
     {
         title: '総勘定元帳',
-        icon: FileText,
+        icon: Calculator,
         href: '/ledgers',
     },
     {
@@ -27,9 +27,9 @@ const menuItems = [
         href: '/profile',
     },
     {
-        title: '設定',
-        icon: Settings,
-        href: '/settings',
+        title: 'ヘルプ',
+        icon: HelpCircle,
+        href: '/help',
     },
 ];
 
