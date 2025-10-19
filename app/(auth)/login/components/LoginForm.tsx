@@ -49,9 +49,7 @@ export function LoginForm() {
             <CardHeader className="items-center justify-center space-y-4">
                 <CardTitle>ログイン</CardTitle>
                 <CardDescription>
-                    はじめての方も登録済みの方も
-                    {/* <br /> */}
-                    こちらからログインできます。
+                    はじめての方も登録済みの方も、こちらからログインできます。
                 </CardDescription>
             </CardHeader>
             <CardContent>

@@ -1,30 +1,27 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardTitle } from '@/components/ui/card';
-import { APP_NAME } from '@/utils/constants';
 
 export default function TopPage() {
     return (
-        <div className="flex items-center justify-center min-h-screen">
-            <div className="w-full max-w-md p-6 shadow rounded">
-                <Card>
-                    <h1>Welcome</h1>
-                    <CardHeader className="items-center justify-center space-y-4">
-                        <CardTitle>{APP_NAME}</CardTitle>
-                        <Image
-                            src="/jouny_logo.png"
-                            alt="Jouny Logo"
-                            width={120}
-                            height={120}
-                            priority={true}
-                            className="rounded-lg"
-                        />
-                    </CardHeader>
-                    <Button type="button">
-                        <Link href="/login">ログインしてはじめる</Link>
-                    </Button>
-                </Card>
+        <div className="flex flex-col items-center justify-center min-h-screen space-y-6 mx-8">
+            <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">
+                Ledry
+            </h1>
+            <p className="leading-7 text-center">
+                個人事業主・フリーランスの方向けの会計管理アプリです。
+            </p>
+            <ul className="my-6 ml-6 list-disc [&>li]:mt-2">
+                <li>取引の登録・編集ができます</li>
+                <li>仕訳帳・総勘定元帳を作成して確定申告に備えましょう</li>
+                <li>ご利用にはGoogleのアカウントが必要です</li>
+            </ul>
+            <div className="flex gap-4">
+                <Button asChild className="rounded-full">
+                    <Link href="/login">ログインしてはじめる</Link>
+                </Button>
+                <Button variant="secondary" asChild className="rounded-full">
+                    <Link href="/home">サービスへ</Link>
+                </Button>
             </div>
         </div>
     );
