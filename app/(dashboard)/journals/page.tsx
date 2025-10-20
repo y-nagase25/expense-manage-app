@@ -1,17 +1,16 @@
+import { Suspense } from 'react';
 import { PageBreadcrumb } from '@/components/PageBreadcrumb';
 import { getAccountOptions } from '@/lib/loaders/accounts';
-import { getJournals } from '@/lib/loaders/journals';
 import JournalRegistration from './components/JournalRegistration';
 import { JournalTable } from './components/JournalTable';
-
-export const dynamic = 'force-dynamic';
+import { JournalTableSkeleton } from './components/JournalTableSkeleton';
 
 const pageContent = {
     title: '取引一覧',
 } as const;
 
 export default async function JournalPage() {
-    const [journals, accountOptions] = await Promise.all([getJournals(), getAccountOptions()]);
+    const accountOptions = await getAccountOptions();
 
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -22,7 +21,9 @@ export default async function JournalPage() {
                 <h1 className="text-2xl font-bold">{pageContent.title}</h1>
                 <JournalRegistration accountOptions={accountOptions} />
             </div>
-            <JournalTable journals={journals} accountOptions={accountOptions} />
+            <Suspense fallback={<JournalTableSkeleton />}>
+                <JournalTable />
+            </Suspense>
         </div>
     );
 }

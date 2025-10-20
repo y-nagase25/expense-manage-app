@@ -1,6 +1,8 @@
 'use client';
 
 import { useActionState, useEffect, useRef } from 'react';
+import TransactionTypeTag from '@/components/common/TransactionTypeTag';
+import { ValidationErrors } from '@/components/common/ValidationErrors';
 import { PageBreadcrumb } from '@/components/PageBreadcrumb';
 import { Button } from '@/components/ui/button';
 import { FormLabel } from '@/components/ui/form-label';
@@ -23,14 +25,12 @@ import {
     PaymentAccountLabel,
     TaxTypeLabel,
 } from '@/lib/types/types';
-import { updateJournalEntry } from '../actions';
-import { JournalPreview } from '../components/journal-preview';
-import TransactionTypeTag from '../components/TransactionTypeTag';
-import { ValidationErrors } from '../components/ValidationErrors';
+import { updateJournalEntry } from '../../actions';
+import { JournalPreview } from './JournalPreview';
 
 const pageContent = {
-    title: '仕訳詳細',
-    prevTitle: '仕訳一覧',
+    title: '取引詳細',
+    prevTitle: '取引一覧',
     prevLink: '/journals',
 } as const;
 
@@ -269,7 +269,7 @@ export function JournalDiplay({ journal, accountOptions }: Props) {
                 </div>
 
                 <div className="my-8">
-                    <div className="text-sm text-muted-foreground mb-2">仕訳プレビュー</div>
+                    <div className="text-sm text-muted-foreground mb-2">取引プレビュー</div>
                     <JournalPreview journal={journal} />
                 </div>
 

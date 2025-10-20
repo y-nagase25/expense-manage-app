@@ -16,8 +16,7 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from '@/components/ui/chart';
-
-export const description = 'An area chart with gradient fill';
+import type { MonthlyData } from '@/lib/loaders/journals';
 
 const chartConfig = {
     income: {
@@ -36,15 +35,11 @@ const chartConfig = {
     },
 } satisfies ChartConfig;
 
-type ChartAreaGradientProps = {
-    chartData: {
-        month: string;
-        income: number;
-        expense: number;
-    }[];
+type ChartAreaGradientClientProps = {
+    chartData: MonthlyData[];
 };
 
-export function ChartAreaGradient({ chartData }: ChartAreaGradientProps) {
+export function ChartAreaGradientClient({ chartData }: ChartAreaGradientClientProps) {
     // Get month range for footer
     const startMonth = chartData[0]?.month || '';
     const endMonth = chartData[chartData.length - 1]?.month || '';
