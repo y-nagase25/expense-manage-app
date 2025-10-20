@@ -5,8 +5,6 @@ import JournalRegistration from './components/JournalRegistration';
 import { JournalTable } from './components/JournalTable';
 import { JournalTableSkeleton } from './components/JournalTableSkeleton';
 
-export const dynamic = 'force-dynamic';
-
 const pageContent = {
     title: '取引一覧',
 } as const;
