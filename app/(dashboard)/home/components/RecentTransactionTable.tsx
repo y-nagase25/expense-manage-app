@@ -1,3 +1,4 @@
+import TransactionTypeTag from '@/components/common/TransactionTypeTag';
 import {
     Table,
     TableBody,
@@ -8,7 +9,6 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { getRecentTransactions, type RecentTransaction } from '@/lib/loaders/journals';
-import TransactionTypeTag from '../../journals/components/TransactionTypeTag';
 
 export async function RecentTransactionTable() {
     const transactions: RecentTransaction[] = await getRecentTransactions();

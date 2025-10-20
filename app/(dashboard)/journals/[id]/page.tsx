@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { getAccountOptions } from '@/lib/loaders/accounts';
 import { getSerializedJournal } from '@/lib/loaders/journals';
-import { JournalDiplay } from './journal-display';
+import { JournalDiplay } from './components/JournalDiplay';
 
 export default async function JournalDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;

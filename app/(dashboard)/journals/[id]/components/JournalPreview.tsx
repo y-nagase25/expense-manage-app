@@ -1,5 +1,6 @@
 'use client';
 
+import TransactionTypeTag from '@/components/common/TransactionTypeTag';
 import {
     Table,
     TableBody,
@@ -11,7 +12,6 @@ import {
 import { formatCurrency, formatToJST } from '@/lib/format';
 import type { SerializedJournal } from '@/lib/types/journals';
 import { cn } from '@/lib/utils';
-import TransactionTypeTag from './TransactionTypeTag';
 
 export function JournalPreview({ journal }: { journal: SerializedJournal }) {
     // Format date

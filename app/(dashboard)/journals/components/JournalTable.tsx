@@ -16,9 +16,9 @@ import { formatAmount, formatDate } from '@/lib/format';
 import type { SerializedJournal } from '@/lib/types/journals';
 import type { AccountOption } from '@/lib/types/types';
 import { cn } from '@/lib/utils';
+import TransactionTypeTag from '../../../../components/common/TransactionTypeTag';
 import { ActionIcons } from './ActionIcons';
 import { JournalFilters } from './JournalFilters';
-import TransactionTypeTag from './TransactionTypeTag';
 
 type JournalTableProps = {
     journals: SerializedJournal[];

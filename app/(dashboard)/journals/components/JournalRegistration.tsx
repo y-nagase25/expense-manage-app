@@ -1,6 +1,7 @@
 'use client';
 
 import { useActionState, useEffect, useRef, useState } from 'react';
+import { ValidationErrors } from '@/components/common/ValidationErrors';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -33,7 +34,6 @@ import {
     TransactionTypeLabel,
 } from '@/lib/types/types';
 import { createJournalEntry } from '../actions';
-import { ValidationErrors } from './ValidationErrors';
 
 type JournalRegistrationProps = {
     accountOptions: AccountOption[];
@@ -100,11 +100,9 @@ const JournalRegistration = ({ accountOptions }: JournalRegistrationProps) => {
                     action={formAction}
                 >
                     <DialogHeader>
-                        <DialogTitle>仕訳を登録</DialogTitle>
+                        <DialogTitle>取引を登録</DialogTitle>
                         <DialogDescription className="mt-2 mb-4">
-                            毎日の取引を登録しましょう。
-                            <br />
-                            登録した仕訳はいつでも編集することができます。
+                            取引は後から編集することも可能です。
                         </DialogDescription>
                     </DialogHeader>
 
