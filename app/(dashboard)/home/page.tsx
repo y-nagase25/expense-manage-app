@@ -1,12 +1,12 @@
 import { Suspense } from 'react';
-import { BankBalance } from './BankBalance';
-import { ChartAreaGradient } from './ChartAreaGradient';
+import { BankBalance } from './components/BankBalance';
+import { ChartAreaGradient } from './components/ChartAreaGradient';
 import {
     BankBalanceSkeleton,
     ChartAreaGradientSkeleton,
     RecentTransactionSkeleton,
-} from './HomeSkeleton';
-import { RecentTransactionTable } from './RecentTransactionTable';
+} from './components/HomeSkeleton';
+import { RecentTransactionTable } from './components/RecentTransactionTable';
 
 export default async function HomePage() {
     return (

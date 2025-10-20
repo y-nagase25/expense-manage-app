@@ -8,7 +8,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { getRecentTransactions, type RecentTransaction } from '@/lib/loaders/journals';
-import TransactionTypeTag from '../journals/components/TransactionTypeTag';
+import TransactionTypeTag from '../../journals/components/TransactionTypeTag';
 
 export async function RecentTransactionTable() {
     const transactions: RecentTransaction[] = await getRecentTransactions();
