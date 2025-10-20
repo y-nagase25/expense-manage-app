@@ -7,14 +7,11 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import type { RecentTransaction } from '@/lib/loaders/journals';
+import { getRecentTransactions, type RecentTransaction } from '@/lib/loaders/journals';
 import TransactionTypeTag from '../journals/components/TransactionTypeTag';
 
-type RecentTransactionTableProps = {
-    transactions: RecentTransaction[];
-};
-
-export function RecentTransactionTable({ transactions }: RecentTransactionTableProps) {
+export async function RecentTransactionTable() {
+    const transactions: RecentTransaction[] = await getRecentTransactions();
     return (
         <Table>
             <TableCaption>直近の取引を表示しています</TableCaption>
