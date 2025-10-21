@@ -11,7 +11,7 @@ export function Footer() {
                     <ul className="flex items-center gap-6 text-sm text-muted-foreground">
                         <li>
                             <Link
-                                href="/term"
+                                href="/terms"
                                 target="_blank"
                                 className="hover:text-foreground transition-colors"
                             >
