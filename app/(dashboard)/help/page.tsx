@@ -1,17 +1,16 @@
 import { PageBreadcrumb } from '@/components/PageBreadcrumb';
+import { createPageMetadata, PAGE_TITLES } from '@/lib/page-config';
 
-const pageContent = {
-    title: 'ヘルプ',
-} as const;
+export const metadata = createPageMetadata(PAGE_TITLES.HELP);
 
 export default function HelpPage() {
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <PageBreadcrumb
-                items={[{ label: 'ホーム', href: '/home' }, { label: pageContent.title }]}
+                items={[{ label: 'ホーム', href: '/home' }, { label: PAGE_TITLES.HELP }]}
             />
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">{pageContent.title}</h1>
+                <h1 className="text-2xl font-bold">{PAGE_TITLES.HELP}</h1>
             </div>
 
             <h2 className="mt-10 scroll-m-20 border-b pb-2 text-xl font-semibold tracking-tight transition-colors first:mt-0">

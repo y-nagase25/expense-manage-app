@@ -1,11 +1,11 @@
-const pageContent = {
-    title: '利用規約',
-} as const;
+import { createPageMetadata, PAGE_TITLES } from '@/lib/page-config';
+
+export const metadata = createPageMetadata(PAGE_TITLES.TERMS);
 
 export default function TermsPage() {
     return (
         <>
-            <h1 className="text-2xl font-bold">{pageContent.title}</h1>
+            <h1 className="text-2xl font-bold">{PAGE_TITLES.TERMS}</h1>
 
             <h2 className="mt-10 scroll-m-20 border-b pb-2 text-xl font-semibold tracking-tight transition-colors first:mt-0">
                 第1条（適用）

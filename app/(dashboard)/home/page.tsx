@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import { createPageMetadata, PAGE_TITLES } from '@/lib/page-config';
 import { BankBalance } from './components/BankBalance';
 import { ChartAreaGradient } from './components/ChartAreaGradient';
 import {
@@ -7,6 +8,8 @@ import {
     RecentTransactionSkeleton,
 } from './components/HomeSkeleton';
 import { RecentTransactionTable } from './components/RecentTransactionTable';
+
+export const metadata = createPageMetadata(PAGE_TITLES.HOME);
 
 export default async function HomePage() {
     return (

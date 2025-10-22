@@ -3,7 +3,6 @@
 import { useActionState, useEffect, useRef } from 'react';
 import TransactionTypeTag from '@/components/common/TransactionTypeTag';
 import { ValidationErrors } from '@/components/common/ValidationErrors';
-import { PageBreadcrumb } from '@/components/PageBreadcrumb';
 import { Button } from '@/components/ui/button';
 import { FormLabel } from '@/components/ui/form-label';
 import { Input } from '@/components/ui/input';
@@ -27,12 +26,6 @@ import {
 } from '@/lib/types/types';
 import { updateJournalEntry } from '../../actions';
 import { JournalPreview } from './JournalPreview';
-
-const pageContent = {
-    title: '取引詳細',
-    prevTitle: '取引一覧',
-    prevLink: '/journals',
-} as const;
 
 type Props = {
     journal: SerializedJournal;
@@ -69,15 +62,7 @@ export function JournalDiplay({ journal, accountOptions }: Props) {
     }, [state, showToast]);
 
     return (
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
-            <PageBreadcrumb
-                items={[
-                    { label: 'ホーム', href: '/' },
-                    { label: pageContent.prevTitle, href: pageContent.prevLink },
-                    { label: pageContent.title },
-                ]}
-            />
-            <h1 className="text-2xl font-semibold mb-6">{pageContent.title}</h1>
+        <>
             <div className="text-sm text-muted-foreground my-2 text-right">
                 最終更新:{formatToJST(journal.updatedAt, false)}
             </div>
@@ -277,6 +262,6 @@ export function JournalDiplay({ journal, accountOptions }: Props) {
                     {isPending ? '更新中...' : '更新'}
                 </Button>
             </form>
-        </div>
+        </>
     );
 }

@@ -4,11 +4,13 @@ import { Button } from '@/components/ui/button';
 const NotFoundPage = () => {
     return (
         <div className="flex items-center justify-center min-h-screen">
-            <div className="w-full max-w-md p-6 shadow rounded">
-                <h2>404 | Not Found</h2>
-                <p>Could not find requested resource...</p>
-                <Button asChild variant="link">
-                    <Link href="/">Return Home</Link>
+            <div className="w-full max-w-md p-6 text-center">
+                <h1 className="text-4xl font-extrabold tracking-tight text-balance">
+                    404 Not Found
+                </h1>
+                <p className="leading-7 my-6">ページが見つかりませんでした。</p>
+                <Button asChild>
+                    <Link href="/">TOPへ戻る</Link>
                 </Button>
             </div>
         </div>

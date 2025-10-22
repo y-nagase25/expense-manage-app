@@ -6,12 +6,11 @@ import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSet } from '@/com
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { formatToJST } from '@/lib/format';
+import { createPageMetadata, PAGE_TITLES } from '@/lib/page-config';
 import { createServerSupabase } from '@/utils/supabase/server';
 import { DeleteUserButton } from './components/DeleteUserButton';
 
-const pageContent = {
-    title: 'アカウント',
-} as const;
+export const metadata = createPageMetadata(PAGE_TITLES.PROFILE);
 
 export default async function ProfilePage() {
     const supabase = await createServerSupabase();
@@ -27,10 +26,10 @@ export default async function ProfilePage() {
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <PageBreadcrumb
-                items={[{ label: 'ホーム', href: '/home' }, { label: pageContent.title }]}
+                items={[{ label: 'ホーム', href: '/home' }, { label: PAGE_TITLES.PROFILE }]}
             />
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">{pageContent.title}</h1>
+                <h1 className="text-2xl font-bold">{PAGE_TITLES.PROFILE}</h1>
             </div>
             <form>
                 <FieldGroup>
