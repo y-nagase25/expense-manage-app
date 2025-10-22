@@ -13,6 +13,7 @@ export const PAGE_TITLES = {
     PRIVACY: 'プライバシーポリシー',
     TERMS: '利用規約',
     LOGIN: 'ログイン',
+    CONFIRM: 'アカウント登録確認',
 } as const;
 
 /**
