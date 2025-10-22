@@ -12,7 +12,7 @@ export default function TopPage() {
             </p>
             <ul className="my-6 ml-6 list-disc [&>li]:mt-2">
                 <li>取引の登録・編集ができます</li>
-                <li>仕訳帳・総勘定元帳を作成して確定申告に備えましょう</li>
+                <li>仕訳の集計・総勘定元帳の作成ができます</li>
                 <li>ご利用にはGoogleのアカウントが必要です</li>
             </ul>
             <div className="flex gap-4">
