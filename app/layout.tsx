@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
+import { Analytics } from '@vercel/analytics/next';
 import { ToastProvider } from '@/hooks/useToast';
 import { APP_NAME } from '@/utils/constants';
 
@@ -26,6 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html lang="ja" className="dark">
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
                 <ToastProvider>{children}</ToastProvider>
+                <Analytics />
             </body>
         </html>
     );
