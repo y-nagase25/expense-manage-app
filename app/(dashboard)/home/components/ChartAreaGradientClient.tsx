@@ -51,7 +51,7 @@ export function ChartAreaGradientClient({ chartData }: ChartAreaGradientClientPr
                 <CardDescription>直近6ヶ月の収入と支出の推移</CardDescription>
             </CardHeader>
             <CardContent>
-                <ChartContainer config={chartConfig}>
+                <ChartContainer config={chartConfig} className="h-[240px] aspect-auto w-full">
                     <AreaChart
                         accessibilityLayer
                         data={chartData}

@@ -40,7 +40,7 @@ export function ChartAreaGradientSkeleton() {
                 </CardDescription>
             </CardHeader>
             <CardContent>
-                <Skeleton className="h-[300px] w-full" />
+                <Skeleton className="h-[400px] w-full" />
             </CardContent>
             <CardFooter>
                 <div className="flex w-full items-start gap-2 text-sm">
