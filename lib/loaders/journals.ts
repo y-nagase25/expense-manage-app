@@ -224,3 +224,15 @@ export const getRecentTransactions = cache(async (): Promise<RecentTransaction[]
         };
     });
 });
+
+export const getTransactionCounts = cache(async (): Promise<number> => {
+    const userId = await getCurrentUserId();
+
+    const journals = await prisma.journal.findMany({
+        where: {
+            userId,
+        },
+    });
+
+    return journals.length;
+});

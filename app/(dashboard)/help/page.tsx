@@ -46,22 +46,6 @@ export default function HelpPage() {
             <p className="leading-7 [&:not(:first-child)]:mt-6">
                 総勘定元帳も青色申告の必須帳簿の一つで、仕訳帳と合わせて適切に記録・保存する必要があります。
             </p>
-
-            <h2 className="mt-10 scroll-m-20 border-b pb-2 text-xl font-semibold tracking-tight transition-colors first:mt-0">
-                青色申告について
-            </h2>
-            <p className="leading-7 [&:not(:first-child)]:mt-6">
-                青色申告は、複式簿記による記帳を条件とした所得税の申告方法です。青色申告を選択することで、以下の特典を受けることができます：
-            </p>
-            <ul className="my-6 ml-6 list-disc [&>li]:mt-2">
-                <li>青色申告特別控除（最大65万円）</li>
-                <li>専従者給与の必要経費算入</li>
-                <li>3年間の損失の繰越控除</li>
-                <li>減価償却の特別控除</li>
-            </ul>
-            <p className="leading-7 [&:not(:first-child)]:mt-6">
-                青色申告を行うためには、適切な帳簿記録と保存が義務付けられており、仕訳帳と総勘定元帳の正確な記録が重要になります。
-            </p>
         </div>
     );
 }
