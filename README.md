@@ -1,28 +1,27 @@
-# Expense Management App
+# 会計管理アプリ
 
-An expense management application built with Next.js 15 that uses Supabase for authentication and Prisma with PostgreSQL for data management. The app provides journal entry management for tracking income and expenses with double-entry bookkeeping.
+Next.js 15を使用して構築された会計管理アプリケーションです。認証にはSupabase、データ管理にはPrismaとPostgreSQLを使用しています。
 
-## Tech Stack
+## 技術スタック
 
-- **Framework**: Next.js 15 (App Router, React 19)
-- **Database**: PostgreSQL (via Supabase) with Prisma ORM
-- **Authentication**: Supabase Auth with Google OAuth
-- **Styling**: Tailwind CSS 4, shadcn/ui components
-- **Linting/Formatting**: Biome (10-100x faster than ESLint)
-- **UI Libraries**: Radix UI primitives, lucide-react icons, sonner for toasts
-- **Form Validation**: React Hook Form + Zod
+- **フレームワーク**: Next.js 15 (App Router, React 19)
+- **データベース**: PostgreSQL (Supabase) + Prisma ORM
+- **認証**: Supabase Auth with Google OAuth
+- **スタイリング**: Tailwind CSS, shadcn/ui
+- **Linting/Formatting**: Biome
+- **UIライブラリ**: Radix UI primitives, lucide-react icons, sonner, recharts
 
-## Getting Started
+## はじめに
 
-### Prerequisites
+### 前提条件
 
-- Node.js 22.x
-- pnpm 9.15.4
-- PostgreSQL database (via Supabase)
+- Node.js
+- pnpm
+- PostgreSQLデータベース
 
-### Environment Variables
+### 環境変数
 
-Create a `.env` file in the project root with the following variables:
+プロジェクトルートに`.env`ファイルを作成し、以下の変数を設定してください:
 
 ```env
 DATABASE_URL="your-supabase-pooled-connection-string"
@@ -31,123 +30,139 @@ NEXT_PUBLIC_SUPABASE_URL="your-supabase-project-url"
 NEXT_PUBLIC_SUPABASE_ANON_KEY="your-supabase-anon-key"
 ```
 
-### Installation
+### インストール
 
 ```bash
-# Install dependencies
+# 依存関係のインストール
 pnpm install
 
-# Generate Prisma Client
+# Prisma Clientの生成
 pnpm db:generate
 
-# Push schema to database (development)
+# データベースにスキーマをプッシュ (開発環境)
 pnpm db:push
 
-# Or run migrations (recommended for production)
+# または、マイグレーションの実行 (本番環境推奨)
 pnpm db:migrate
 ```
 
-### Development
+### 開発
 
 ```bash
-# Start development server with Turbopack
+# Turbopackで開発サーバーを起動
 pnpm dev
 
-# Start with debug mode (shows SQL queries)
+# デバッグモードで起動 (SQLクエリを表示)
 pnpm dev:debug
 
-# Open Prisma Studio to view/edit database
+# Prisma Studioを開いてデータベースを表示/編集
 pnpm db:studio
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
+ブラウザで [http://localhost:3000](http://localhost:3000) を開いてアプリケーションを確認できます。
 
-## Available Scripts
+## 利用可能なスクリプト
 
-### Development
-- `pnpm dev` - Start development server with Turbopack
-- `pnpm dev:debug` - Start dev server with SQL query logging
-- `pnpm build` - Build for production
-- `pnpm start` - Start production server
-- `pnpm build:check` - Build and test production locally
+### 開発
+- `pnpm dev` - Turbopackで開発サーバーを起動
+- `pnpm dev:debug` - SQLクエリログ付きで開発サーバーを起動
+- `pnpm build` - 本番用ビルド
+- `pnpm start` - 本番サーバーを起動
+- `pnpm build:check` - ビルドしてローカルで本番環境をテスト
 
 ### Linting & Formatting (Biome)
-- `pnpm lint` - Check for linting and formatting issues
-- `pnpm lint:fix` - Auto-fix linting and formatting issues
-- `pnpm format` - Format all files
+- `pnpm lint` - LintとFormatの問題をチェック
+- `pnpm lint:fix` - LintとFormatの問題を自動修正
+- `pnpm format` - 全ファイルをフォーマット
 
-### Database (Prisma)
-- `pnpm db:generate` - Generate Prisma Client
-- `pnpm db:push` - Push schema changes to database (no migration)
-- `pnpm db:migrate` - Create and apply new migration
-- `pnpm db:deploy` - Deploy migrations (production)
-- `pnpm db:status` - Check migration status
-- `pnpm db:studio` - Open Prisma Studio GUI
-- `pnpm db:seed:accounts` - Run account seed script
+### データベース (Prisma)
+- `pnpm db:generate` - Prisma Clientを生成
+- `pnpm db:push` - スキーマ変更をデータベースにプッシュ (マイグレーションなし)
+- `pnpm db:migrate` - 新しいマイグレーションを作成して適用
+- `pnpm db:deploy` - マイグレーションをデプロイ (本番環境)
+- `pnpm db:status` - マイグレーションステータスを確認
+- `pnpm db:studio` - Prisma Studio GUIを開く
+- `pnpm db:seed:accounts` - 勘定科目シードスクリプトを実行
 
-## Project Structure
+## プロジェクト構成
 
 ```
 app/
-  (auth)/                    # Authentication pages (login, OAuth callback)
-  (dashboard)/               # Authenticated pages (journals, profile)
-  layout.tsx                 # Root layout
-  page.tsx                   # Home page
+  (auth)/                    # 認証ページ
+  (dashboard)/               # 認証が必要なページ
+  (static)/                  # 静的ページ
+  layout.tsx                 # ルートレイアウト
+  page.tsx                   # ランディングページ
 
 components/
-  ui/                        # shadcn/ui components
-  icons/                     # Icon components
-  Header.tsx, Sidebar.tsx    # Layout components
+  ui/                        # shadcn/ui コンポーネント (button, card, dialog, table等)
+  AppLayout.tsx              # メインアプリレイアウトラッパー
 
 lib/
-  actions.ts                 # Server Actions for CRUD operations
-  db.ts                      # Prisma client singleton
-  types.ts                   # Type definitions and label mappings
-  utils.ts                   # Utility functions
+  actions.ts                 # CRUD操作用のServer Actions
+  db.ts                      # Prismaクライアントシングルトン
 
 utils/
-  supabase/                  # Supabase client utilities
-
-hooks/
-  useJournal.tsx             # Journal modal state management
-  useToast.tsx               # Toast notification hook
+  supabase/                  # Supabaseクライアントユーティリティ
 
 prisma/
-  schema.prisma              # Database schema
-  migrations/                # Migration files
-  seed/                      # Seed scripts
+  schema.prisma              # データベーススキーマ (Journal, Account, Profileモデル)
+  migrations/                # マイグレーションファイル
+  seed/                      # シードスクリプト
+    accounts.ts              # 勘定科目マスタデータのシード
 ```
 
-## Features
+## 機能
 
-- Double-entry bookkeeping journal entries
-- Income and expense tracking
-- Multiple account types (Sales, Communication, Supplies, Rent, etc.)
-- Tax category management (10%, 8%, Non-taxable, Tax-exempt)
-- Google OAuth authentication via Supabase
-- Responsive design with dark mode support
-- Real-time updates with server actions
+### 会計コア機能
+- **複式簿記**: 借方/貸方勘定を含む完全な仕訳入力管理
+- **勘定科目マスタ管理**: コードとカテゴリを含む包括的な勘定科目表
+- **収支追跡**: 取引タイプ(収入/支出)による取引追跡
+- **総勘定元帳表示**: 勘定科目カテゴリ別に整理された元帳表示
+- **税務管理**: 複数の税区分 (10%, 8%, 非課税, 不課税, 免税)
 
-## Design Tokens
+### データモデル
+- **Journal**: 日付、タイプ、借方/貸方勘定、金額、支払方法、税区分、メタデータを含む取引エントリ
+- **Account**: コード、名称、カテゴリ(資産/負債/純資産/収益/費用)、レポートタイプ(BS/PL)を含む勘定科目表
+- **Profile**: ユーザーの事業情報と利用規約の同意
 
-This project uses design tokens for consistent theming. Always use semantic color classes like `bg-background`, `text-foreground`, `bg-primary` instead of hardcoded colors like `bg-white` or `text-gray-900`. See `app/globals.css` for all available tokens.
+### UI/UX機能
+- Supabase経由の**Google OAuth認証**
+- デスクトップとモバイルに最適化された**レスポンシブデザイン**
+- rechartsによる**データ可視化** (分析用)
+- ユーザーフィードバック用の**トースト通知**
+- React Hook FormとZodによる**フォーム検証**
+- Radix UI primitivesを使用した**アクセシブルなコンポーネント**
 
-## Contributing
+## デザインシステム
 
-- Never push directly to `main` or `develop` branches
-- Create feature branches for all work
-- Run `pnpm lint:fix` before committing
-- All UI components should use shadcn/ui when available
-- Follow the architecture patterns in CLAUDE.md
+### デザイントークン
+このプロジェクトは、一貫したテーマを実現するためにデザイントークンを使用しています。ハードコードされた色ではなく、常にセマンティックな色クラスを使用してください。
 
-## Learn More
+**必須トークン**: `bg-background`, `text-foreground`, `text-muted-foreground`, `bg-primary`, `border-border`, `bg-card`, `bg-muted`, `bg-accent`, `bg-destructive`, `bg-success`, `ring-ring`
 
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Prisma Documentation](https://www.prisma.io/docs)
-- [Supabase Documentation](https://supabase.com/docs)
-- [shadcn/ui Components](https://ui.shadcn.com)
+利用可能な全トークンは`app/globals.css`を参照してください。
+
+### UIコンポーネントガイドライン
+- UI要素には**常にshadcn/uiコンポーネント**を使用 (button, card, dialog, table, form等)
+- shadcn/uiコンポーネントが存在する場合、**カスタム実装を作成しない**
+- 新しいコンポーネントのインストール: `npx shadcn@latest add [component-name]`
+
+## 開発ガイドライン
+- **デフォルトでServer Components**: "use client"は必要な場合のみ使用 (状態管理、ブラウザAPI、重いUI)
+- **サーバーロジックの分離**: データ取得にはローダーと別パッケージを使用
+- **変更操作にはServer Actions**: "use server"は副作用のある操作にのみ使用
+- **デザイントークンルールに従う**: ハードコードされたTailwindカラーは使用しない
+- CLAUDE.mdで定義された**アーキテクチャパターンに従う**
+
+## 詳細情報
+
+- [Next.js ドキュメント](https://nextjs.org/docs)
+- [Prisma ドキュメント](https://www.prisma.io/docs)
+- [Supabase ドキュメント](https://supabase.com/docs)
+- [shadcn/ui コンポーネント](https://ui.shadcn.com)
 - [Tailwind CSS](https://tailwindcss.com/docs)
 
-## License
+## ライセンス
 
-Private project
+プライベートプロジェクト
